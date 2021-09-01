@@ -59,4 +59,48 @@ Once the variables have been set, the Bootstrap Script can be executed. This is 
 
 TDQ is configured using the *Box Table*. Objects with `ObjectType = ‘CONF’` contain configuration values.
 
-For details on design, see the [Wiki](https://github.com/davolsen/tacticaldq/wiki)
+## Add a Measure
+
+Measures are views in SQL, augmented with an embedded XML metadata block. Create a view with the following pattern:
+
+    CREATE OR ALTER VIEW [{HomeSchema}].[{HomePrefix}{MeasureViewPattern}]{unique token} AS
+    /*<measure>
+    <id>{uniqueidentifier}</id>
+    <code>{Measure Code}</code>
+    <description>{Description of measure}</description>
+    <refreshPolicy>{Continuous|Hourly|Daily|Mo|Tu|We|Th|Fr|Sa|Su}</description>
+    <refreshTimeOffset>{HH:mm}</description>
+    </measure>*/
+    SELECT Column
+    FROM Table
+    WHERE Column=Value;
+
+Where in the name of the view:
+
+-  *{HomeSchema}*, *{HomePrefix}* and *{MeasureViewPattern}* are the configuration parameters in the Box table.
+
+    > :warning: Warning
+    > 
+    > The schema, and the name of the view **must** be encapsulated with square brackets, such as \[schema\].\[full name of view\].
+    > This is not strictly required for TSQL, but is required by the `Pack` Procedure and `Unpack` Procedure.
+        
+-   *{unique token}* is anything that makes the view name unique,
+    such as a measure code. This has no impact on operation and reporting.
+
+Take special note of the XML embedded in a comment. This is metadata that is required by TDQ:
+
+> :warning: Warning
+> 
+> tags are `<caseSensitive>`
+
+- `<id>{uniqueidentifier}</id>` stands for a GUID to track the measure even if the Measure Code changes. Use may the TSQL function `PRINT NEWID()` to generate one.
+
+- `<code>{Measure Code}</code>` stands for the unique organisation meaningful measure code
+
+- `<description>{Description of measure}</description>` stands for a organisation meaningful description of the data quality problem identified by the measure.
+
+- `<refreshPolicy>` and `<refreshTimeOffset>` control the frequency and timing at which measurements are taken. See details below.
+
+-------
+
+For details on configuration, detailed usage, and architecture, see the [Wiki](https://github.com/davolsen/tacticaldq/wiki)
