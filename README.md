@@ -59,7 +59,27 @@ Once the variables have been set, the Bootstrap Script can be executed. This is 
 
 TDQ is configured using the *Box Table*. Objects with `ObjectType = ‘CONF’` contain configuration values.
 
-## Add a Measure
+### Email
+
+#### Templates
+
+TDQ supports parametrised email templates to simplify core code and allow customisation of the messaging. The `EmailSend` Procedure can take an Box Table Object Name as a parameter. The Object Name must correspond to an configuration object in the Box table with a text content value, otherwise the procedure will exit in error. The text content is parsed as follows:
+
+- *$PARAMETERn$* (where n is 1 to 5): Replaced with supplied *@Parameter1* to *@Parameter5* values.
+
+- `\\n\\r`, `\\n`, `\\r` replaced with CRLF’s (in that order)
+
+- `\\t` replaced with tab characters
+
+- Above can all be escaped with a `\\` (e.g. `\\$PARAMETER1$` or `\\\\n`)
+
+> :warning:
+> 
+> Any instance of a double backslash `\\\\` will be substituted with a single backslash `\\`
+
+## Design
+
+### Add a Measure
 
 Measures are views in SQL, augmented with an embedded XML metadata block. Create a view with the following pattern:
 
@@ -101,7 +121,6 @@ Take special note of the XML embedded in a comment. This is metadata that is req
 
 - `<refreshPolicy>` and `<refreshTimeOffset>` control the frequency and timing at which measurements are taken. See details below.
 
-<<<<<<< HEAD
 #### Refresh Policy
 
 The *Refresh Policy* and *Time Offset* are used to schedule measurement jobs. When the scheduling agent job runs, measures that meet the conditions determined by the combination of refresh policy and time offset will be scheduled. In this way define the *earliest* time at which a measurement will be taken. The precise time will depend on the scheduling agent job.
@@ -297,8 +316,14 @@ TDQ uses a consistent design and coding style.
 ## Coding Style
 
 Due to the 4000 character limit imposed by the source code management approach, coding style strikes a balance between being space efficient but still readable.
-=======
--------
->>>>>>> 724e3327f6f798f74fcb2a9e348915eb031fb66a
 
-For details on configuration, detailed usage, and architecture, see the [Wiki](https://github.com/davolsen/tacticaldq/wiki)
+- Few empty line breaks are used, typically only to group major sections of code
+- Major comments are made as `PRINT` statements, to aide in interpretation and debugging
+- All statements are semicolon terminated`;`
+- Syntactic sugar such as `AS` in type declarations and join aliases is typically avoided
+- For aliased and calculated columns in queries, the column name followed by ‘=’ and the calculation statement is used, as opposed to putting the alias last. E.g. `SELECT ColumnName =1+1;`, vs. `SELECT 1+1 AS ColumnName;`”
+- Variables are declared as late as possible as close to the code that uses them, rather than in a big block at the top
+- Variable declaration includes value assignment in a single line, where possible (e.g. `DECLARE @v int = 1;`)
+- Variable type names, assignments, join predicates, are tab aligned when they appear in subsequent lines
+- `nvarchar` is always used in preference to `varchar`, except where mandated
+- `datetimeoffset` is always used in preference to other date and time types, except where `datetime2` is mandated (e.g. Temporal table system time columns)
