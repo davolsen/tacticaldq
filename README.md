@@ -174,6 +174,63 @@ The main loop of TDQ is as follows:
 
 ## Objects
 
+### `Box` Table
+
+The Box Table stores configuration parameters, core object definitions, and measure viewsl referred to generically as "Objects"
+
+| Column | Type | Usage and Interpretation
+|--------|------|----
+| `ObjectName` | `nvarchar(128)`, Primary Key | The name of the object, used to locate it in the table.
+| `ObjectType` | `char(4)`. | One of four values:<br><br>`CONF`: Configuration parameter. The value is stored in one of the *Definition* columns.<br>`CODE`: Stored procedure, function or view definition script, *compressed*[^1] and stored in `DefinitionBinary`<br>`TABL`: Table definition script, , *compressed*[^1] and stored in `DefinitionBinary`<br>`MESR`: A measure view definition, *compressed*[^1] and stored in `DefinitionBinary`
+| `ObjectSequence` | `tinyint` | Relevant for `CONF` and `TABL` objects. The ascending order in which objects must be created. This is used by the `Unpack` Procedure. `CONF` items, the `Box` Table and the `Unpack` procedure have an `ObjectSequence` of `0` and are ignored by the `Unpack` Procedure.
+| `DefinitionBinary` | `varbinary(8000)` | Used by `CODE`, `TABL` and `MESR` objects to store their definitions.
+| `DefinitionText`<br>`DefinitionDecimal`<br>`DefinitionDate`<br>`DefinitionBit` | `nvarchar(4000)`<br>`decimal(19,5)`<br>`datetimeoffset(0)`<br>`bit`<br>All nullable | Used by `CONF` objects to store their values.
+
+[^1] *Compressed* means passed through SQL Server function `COMPRESS()`
+
+### `Measurements` Table
+
+A record of each measure refresh. Rows are added to this table by the `Refresh` Procedure, and used by the `ReportMeasureDetail` View to provide a detailed accounting of case counts. This table should only contain rows of successful refreshes. Refreshes that ended in failure should not be in this table.
+
+| Column | Type | Usage and Interpretation
+|--------|------|----
+| `MeasurementID` | `int`, Primary Key, identity | Automatically generated unique sequence number for the measurement.
+| `MeasureID` | `uniqueidentifier` | Reference to the measure itself. Joins to the `Measures` View
+| `TimestampStarted` | `datetimeoffset(0)` default `SYSDATETIMEOFFSET()` | The date and time the measure refresh started.
+| `TimestampCompleted` | `datetimeoffset(0)` nullable | The date and time the measure refresh was completed. When this is `NULL`, it means the measure refresh is still in progress, or that the refresh failed but the exception handler failed to delete the row. Because there is no guarantee, this table should not be used to determine which measures are currently being refreshed.
+
+### `Cases` Table
+
+A row for each row returned by the measure view, the last time it was refreshed. Each case row is a set of properties and values which can be used to locate the record that failed the data quality conditions programmed into the measure view, in a system of record.
+
+This table contains only *current* cases. The `CaseHistory` Table retains a full history. This is a **Temporal Table**, also known as *System-Versioned*. Any rows updated or deleted are automatically copied to the *History* table.
+
+| Column | Type | Usage and Interpretation
+|--------|------|----
+| `CaseID` | `int` Primary Key identity | Automatically generated unique sequence number for the *case*.
+| `MeasureID` | `uniqueidentifier` | Reference to the *measure* to which this *case* related. Joins to the `Measures` View
+| `MeasurementID` | `int` | Reference the `Measurements` Table row, from which the `TimestampStarted` and `TimestampCompleted` columns can be retrieved
+| `CaseProperty1` ... `CaseProperty9` | `nvarchar(128)` nullable[^1] | The name of the measure view column from which the related `CaseValue1` ... `CaseValue9` value was obtained
+| `CaseValue1` ... `CaseValue9` | `nvarchar(4000)` nullable | The value returned by measure view, from the column named in the related `CaseProperty1` ... `CaseProperty9`
+| `CasePropertiesExtended` | `nvarchar(4000)` nullable | A concatenation of columns and column values beyond the 9th, or as much will fit in 4000 characters. Takes format `Name10=Value10;Name11=Value11...`
+| `CaseChecksum` | `int` | The checksum value of the row from the measure view[^2].
+| `Identified` | `datetime2(0)` | The UTC date and time when the record was created. This is automatically set, and is part of the temporal table definition
+| `Resolved` | `datetime2(0)` | Part of the temporal table definition, gets automatically and permanently set to `9999-12-31 23:59:59`. This does not have a meaningful interpretation in the `Cases` Table, other than the simple meaning that the case is still current. There is a matching column in the `CaseHistory` which is set when a case is updated or deleted. 
+
+[^1] Except `CaseProperty1` and `CaseValue1`. The Measure View should return at least one column of data, or it's not possible to locate the offending record in the system of record.
+
+[^2] Uses the SQL function `BINARY_CHECKSUM()`
+	> :information_source: Row checksum is from the measure view, **not** the `Cases` Table. Running `BINARY_CHECKSUM()` on the `Cases` Table will probably not get the same result due to type conversion and the `CasePropertiesExtended` column for views with 10+ columns.
+
+
+### `CaseHistory` Table
+
+TODO: Complete
+
+### `Log` Table
+
+TODO: Complete
+
 ### Refresh Procedure
 
 The `Refresh` Procedure takes a Measure `<id>` (uniqueidentifier) or Measure `<code>`, selects all rows returned by the associated SQL View, and stores the results. The process is as follows:
