@@ -1,1 +1,0 @@
-CREATE SERVICE [alpha_TDQScheduler] AUTHORIZATION dbo ON QUEUE [tdq].[alpha_MeasurementJobs]([DEFAULT]);
