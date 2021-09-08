@@ -1,6 +1,6 @@
 CREATE OR ALTER VIEW [tdq].[alpha_ReportLog] AS
+--TacticalDQ by DJ Olsen https://github.com/davolsen/tacticaldq
 /*<object><sequence>50</sequence></object>*/
-
 SELECT TOP 1000
 	LogEntryID
 	,LogTimestamp

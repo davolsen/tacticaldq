@@ -1,4 +1,5 @@
 CREATE OR ALTER PROCEDURE [tdq].[alpha_Teardown](
+--TacticalDQ by DJ Olsen https://github.com/davolsen/tacticaldq
 /*<object><sequence>103</sequence></object>*/
 	@PackFirst	bit	=1
 	,@Confirm	bit	=0

@@ -1,3 +1,4 @@
+--TacticalDQ by DJ Olsen https://github.com/davolsen/tacticaldq
 CREATE TABLE tdq.alpha_Log(
 	LogEntryID int IDENTITY(1,1) NOT NULL PRIMARY KEY,
 	LogTimestamp datetimeoffset(0) NOT NULL DEFAULT (sysdatetimeoffset()),

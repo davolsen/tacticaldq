@@ -1,4 +1,5 @@
 CREATE OR ALTER VIEW [tdq].[alpha_ScheduleCurrent] AS
+--TacticalDQ by DJ Olsen https://github.com/davolsen/tacticaldq
 /*<object><sequence>42</sequence></object>*/
 	WITH
 		MeasurementJobs AS (

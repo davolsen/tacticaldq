@@ -1,4 +1,5 @@
 CREATE OR ALTER VIEW [tdq].[alpha_ReportMeasurePropertiesXML] AS
+--TacticalDQ by DJ Olsen https://github.com/davolsen/tacticaldq
 /*<object><sequence>60</sequence></object>*/
 WITH
 	MeasureProperties AS (

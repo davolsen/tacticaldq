@@ -1,4 +1,5 @@
 CREATE OR ALTER VIEW [tdq].[alpha_ReportMeasurementsDetail] AS
+--TacticalDQ by DJ Olsen https://github.com/davolsen/tacticaldq
 /*<object><sequence>50</sequence></object>*/
 SELECT
 	Measures.MeasureID

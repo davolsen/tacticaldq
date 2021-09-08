@@ -1,4 +1,5 @@
 CREATE OR ALTER PROCEDURE [tdq].[alpha_Pack] AS BEGIN
+--TacticalDQ by DJ Olsen https://github.com/davolsen/tacticaldq
 /*<object><sequence>102</sequence></object>*/
 	SET NOCOUNT ON;
 	BEGIN TRAN

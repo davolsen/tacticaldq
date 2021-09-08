@@ -1,4 +1,5 @@
 CREATE OR ALTER PROC [tdq].[alpha_SchedulerConfig](
+--TacticalDQ by DJ Olsen https://github.com/davolsen/tacticaldq
 /*<object><sequence>40</sequence><autoExecute>true</autoExecute></object>*/
 	@CheckOnly bit = 0--Don't make changes, only check.
 ) AS BEGIN
@@ -17,7 +18,7 @@ CREATE OR ALTER PROC [tdq].[alpha_SchedulerConfig](
 	--Add the measurement job queue and service
 	DECLARE
 		@SQL						nvarchar(4000)--dynamic SQL
-		,@MaxParallelMeasurements	int				= [tdq].[alpha_BoxDec]('MaxParallelMeasurements')--MAX_QUEUE_READERS
+		,@SchedulerMaxParallelRefreshes	int				= [tdq].[alpha_BoxDec]('SchedulerMaxParallelRefreshes')--MAX_QUEUE_READERS
 		,@ServiceName				nvarchar(4000)	= '[alpha_Scheduler]';--needed for bootstrap/unpack script
 
 	--if they exist and this is not just a check, drop service and then the queue
@@ -31,12 +32,12 @@ CREATE OR ALTER PROC [tdq].[alpha_SchedulerConfig](
 		IF @CheckOnly = 0 DROP QUEUE [tdq].[alpha_MeasurementJobs]
 	END;
 	ELSE SET @ReturnValue = @ReturnValue + 4;
-	--create queue dynamic SQL with MaxParallelMeasurements parameter
+	--create queue dynamic SQL with SchedulerMaxParallelRefreshes parameter
 	IF @CheckOnly = 0 BEGIN
 		SET @SQL = '
 			CREATE QUEUE [tdq].[alpha_MeasurementJobs] WITH RETENTION = OFF, STATUS = ON, ACTIVATION (
 				PROCEDURE_NAME = [tdq].[alpha_RefreshFromQueue]
-				,MAX_QUEUE_READERS = ' + CAST(@MaxParallelMeasurements AS nvarchar) + '
+				,MAX_QUEUE_READERS = ' + CAST(@SchedulerMaxParallelRefreshes AS nvarchar) + '
 				,EXECUTE AS OWNER
 			);';
 		--create queue

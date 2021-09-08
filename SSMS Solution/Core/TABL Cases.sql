@@ -1,3 +1,4 @@
+--TacticalDQ by DJ Olsen https://github.com/davolsen/tacticaldq
 CREATE TABLE tdq.alpha_Cases(
 	CaseID int IDENTITY(1,1) NOT NULL PRIMARY KEY,
 	MeasureID uniqueidentifier NOT NULL,

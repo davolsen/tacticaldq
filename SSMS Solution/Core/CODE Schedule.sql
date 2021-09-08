@@ -1,4 +1,5 @@
 CREATE OR ALTER PROC [tdq].[alpha_Schedule] AS BEGIN
+--TacticalDQ by DJ Olsen https://github.com/davolsen/tacticaldq
 /*<object><sequence>41</sequence></object>*/
 	SET NOCOUNT ON;
 	DECLARE

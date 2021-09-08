@@ -1,4 +1,5 @@
 CREATE OR ALTER VIEW [tdq].[alpha_Measures] AS
+--TacticalDQ by DJ Olsen https://github.com/davolsen/tacticaldq
 /*<object><sequence>30</sequence></object>*/
 WITH
 	Definitions AS (
@@ -21,7 +22,7 @@ WITH
 			,MeasureCode		=NULLIF(XMLData.value('(/measure/code/text())[1]','nvarchar(100)'),'')
 			,MeasureID			=TRY_CAST(XMLData.value('(/measure/id/text())[1]','nchar(36)') AS uniqueidentifier)
 			,MeasureDescription	=NULLIF(XMLData.value('(/measure/description/text())[1]','nvarchar(500)'),'')
-			,RefreshPolicy		=ISNULL(NULLIF(XMLData.value('(/measure/refreshPolicy/text())[1]','nvarchar(500)'),''),[tdq].[alpha_BoxText]('RefreshPolicyDefault'))
+			,RefreshPolicy		=ISNULL(NULLIF(XMLData.value('(/measure/refreshPolicy/text())[1]','nvarchar(20)'),''),[tdq].[alpha_BoxText]('RefreshPolicyDefault'))
 			,RefreshTimeOffset	=ISNULL(TRY_CAST(XMLData.value('(/measure/refreshTimeOffset/text())[1]','nchar(5)') AS time(0)),[tdq].[alpha_BoxDate]('RefreshTimeOffsetDefault'))
 			,MeasureOwner		=NULLIF(TRY_CAST(XMLData.query('/measure/owner/text()') AS nvarchar(254)),'')
 			,MeasureCategory	=NULLIF(TRY_CAST(XMLData.query('/measure/category/text()') AS nvarchar(254)),'')
@@ -66,10 +67,10 @@ SELECT
 	,RefreshNext					=CASE
 										WHEN MaxTimestampStarted IS NULL THEN DATEADD(SECOND,-1,SYSDATETIMEOFFSET())
 										ELSE
-											DATEADD(MINUTE,RefreshTimeMinutes,CASE RefreshPolicy
-												WHEN 'Continuous'	THEN MaxTimestampStarted
-												WHEN 'Hourly'		THEN DATEADD(HOUR,1,LastStartedHour)--TODO: NOPE
-												WHEN 'Daily'		THEN DATEADD(DAY,1,LastStartedDay)
+											DATEADD(MINUTE,RefreshTimeMinutes,CASE LEFT(RefreshPolicy,1)
+												WHEN 'C'	THEN MaxTimestampStarted
+												WHEN 'H'		THEN DATEADD(HOUR,1,LastStartedHour)--TODO: NOPE
+												WHEN 'D'		THEN DATEADD(DAY,1,LastStartedDay)
 												ELSE DATEADD(DAY,IIF(Today > RefreshWeekDay,7,0) + (RefreshWeekDay - Today),LastStartedDay)
 													END) END
 	,Valid							=CASE

@@ -1,4 +1,5 @@
 CREATE OR ALTER PROC [tdq].[alpha_AgentConfig](
+--TacticalDQ by DJ Olsen https://github.com/davolsen/tacticaldq
 /*<object><sequence>40</sequence><autoExecute>true</autoExecute></object>*/
 	@CheckOnly			bit = 0--1=Don't make changes, only check.
 	,@Enabled			bit	= 1--1=The job should be enabled

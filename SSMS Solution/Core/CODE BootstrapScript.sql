@@ -1,22 +1,18 @@
 CREATE OR ALTER PROCEDURE [tdq].[alpha_BootstrapScript] AS BEGIN
+--TacticalDQ by DJ Olsen https://github.com/davolsen/tacticaldq
 /*<object><sequence>101</sequence></object>*/
 	SET NOCOUNT ON;
-	--Bootstrap script
 	PRINT '/*';
 	PRINT REPLACE([tdq].[alpha_BoxText]('License'),'\n',CHAR(13)+CHAR(10));
 	PRINT '*/';
 	PRINT '--Execute on Microsoft SQL Server 2016 or later, with sysadmin priviledges';
 	PRINT 'DECLARE';
-	PRINT '	@SchemaName AS nvarchar(128) = ''tdq'' -- All objects will be created in this schema';
-	PRINT '	,@Prefix AS nvarchar(128) = ''''; -- All objects will be prefixed with this in their name';
-	PRINT '';
-	PRINT '';
+	PRINT '	@SchemaName nvarchar(128) = ''tdq'' -- All objects will be created in this schema';
+	PRINT '	,@Prefix nvarchar(128) = ''''; -- All objects will be prefixed with this in their name'+REPLICATE(CHAR(13)+CHAR(10),2)
 	PRINT 'SET NOCOUNT ON;';
-	PRINT 'DECLARE @SQL AS nvarchar(4000);';
-	PRINT 'SET @SQL = ''SELECT OBJECT_ID(''''['' + @SchemaName + ''].['' + @Prefix + ''Box]'''')'';';
-	PRINT 'DECLARE @ObjectIDTable AS TABLE(ObjectID int);';
-	PRINT 'INSERT INTO @ObjectIDTable';
-	PRINT 'EXEC (@SQL);';
+	PRINT 'DECLARE @SQL AS nvarchar(4000) = ''SELECT OBJECT_ID(''''['' + @SchemaName + ''].['' + @Prefix + ''Box]'''')'';';
+	PRINT 'DECLARE @ObjectIDTable TABLE(ObjectID int);';
+	PRINT 'INSERT @ObjectIDTable EXEC (@SQL);';
 	PRINT 'IF (SELECT TOP 1 ObjectID FROM @ObjectIDTable) IS NOT NULL THROW 50000, ''Box table already exists. Did you already run bootstrap? You can execute the unpack procedure, or drop the Box table, or change schema or prefix'', 1';
 	PRINT 'IF OBJECT_ID(''tempdb..#BoxTable'') IS NOT NULL DROP TABLE #BoxTable'
 	PRINT 'SELECT ObjectName,ObjectType,ObjectSequence,CAST('''' AS xml).value(''xs:base64Binary(sql:column("DefinitionBinary"))'',''varbinary(max)'')DefinitionBinary,DefinitionText,DefinitionDecimal,DefinitionDate,DefinitionBit INTO #BoxTable FROM (VALUES';
@@ -58,7 +54,7 @@ CREATE OR ALTER PROCEDURE [tdq].[alpha_BootstrapScript] AS BEGIN
 	PRINT ')Box(ObjectName,ObjectType,ObjectSequence,DefinitionBinary,DefinitionText,DefinitionDecimal,DefinitionDate,DefinitionBit)';
 	PRINT 'SET @SQL =REPLACE(REPLACE((SELECT CAST(DECOMPRESS(DefinitionBinary) AS nvarchar(4000)) FROM #BoxTable WHERE ObjectName = ''Box''),''[$schema$]'',''[''+@SchemaName+'']''),''[$prefix$'',''[''+@Prefix);';
 	PRINT 'EXEC (@SQL);';
-	PRINT 'SET @SQL =''INSERT INTO [''+@SchemaName+''].[''+@Prefix+''Box] SELECT ObjectName,ObjectType,ObjectSequence,DefinitionBinary,DefinitionText,DefinitionDecimal,DefinitionDate,DefinitionBit FROM #BoxTable'';';
+	PRINT 'SET @SQL =''INSERT [''+@SchemaName+''].[''+@Prefix+''Box] SELECT ObjectName,ObjectType,ObjectSequence,DefinitionBinary,DefinitionText,DefinitionDecimal,DefinitionDate,DefinitionBit FROM #BoxTable'';';
 	PRINT 'EXEC (@SQL);';
 	PRINT 'SET @SQL =REPLACE(REPLACE((SELECT CAST(DECOMPRESS(DefinitionBinary) AS nvarchar(4000)) FROM #BoxTable WHERE ObjectName = ''Unpack''),''[$schema$]'',''[''+@SchemaName+'']''),''[$prefix$'',''[''+@Prefix);';
 	PRINT 'SET @SQL =REPLACE(REPLACE(@SQL,''[/$schema/$]'',''[$schema$]''),''[/$prefix/$'',''[$prefix$'');';

@@ -1,4 +1,5 @@
 CREATE OR ALTER VIEW [tdq].[alpha_ReportMeasures] AS
+--TacticalDQ by DJ Olsen https://github.com/davolsen/tacticaldq
 /*<object><sequence>50</sequence></object>*/
 WITH
 	Errors AS (

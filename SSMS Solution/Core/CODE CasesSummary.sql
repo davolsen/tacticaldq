@@ -1,4 +1,5 @@
 CREATE OR ALTER FUNCTION [tdq].[alpha_CasesSummary]
+--TacticalDQ by DJ Olsen https://github.com/davolsen/tacticaldq
 /*<object><sequence>10</sequence></object>*/
 (
 	@MeasureID	uniqueidentifier

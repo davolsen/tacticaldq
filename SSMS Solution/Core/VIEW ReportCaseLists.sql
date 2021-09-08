@@ -1,4 +1,5 @@
 CREATE OR ALTER VIEW [tdq].[alpha_ReportCaseLists] AS
+--TacticalDQ by DJ Olsen https://github.com/davolsen/tacticaldq
 /*<object><sequence>50</sequence></object>*/
 WITH
 	CurrentMeasurements AS (

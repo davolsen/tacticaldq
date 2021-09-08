@@ -1,4 +1,5 @@
 CREATE OR ALTER PROC [tdq].[alpha_RefreshFromQueue] AS BEGIN
+--TacticalDQ by DJ Olsen https://github.com/davolsen/tacticaldq
 /*<object><sequence>32</sequence></object>*/
 	DECLARE
 		@SQL				nvarchar(4000)--holds dynamic SQL

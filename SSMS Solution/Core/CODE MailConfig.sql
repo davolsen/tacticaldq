@@ -1,4 +1,5 @@
 CREATE OR ALTER PROC [tdq].[alpha_MailConfig](
+--TacticalDQ by DJ Olsen https://github.com/davolsen/tacticaldq
 /*<object><sequence>40</sequence><autoExecute>true</autoExecute></object>*/
 	@CheckOnly bit =0--Don't make changes, only check.
 ) AS BEGIN

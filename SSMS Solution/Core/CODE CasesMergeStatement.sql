@@ -1,4 +1,5 @@
 CREATE OR ALTER FUNCTION [tdq].[alpha_CasesMergeStatement]
+--TacticalDQ by DJ Olsen https://github.com/davolsen/tacticaldq
 /*<object><sequence>10</sequence></object>*/
 (
 	@TempCaseTableName		nvarchar(4000)

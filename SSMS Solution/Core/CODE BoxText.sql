@@ -1,4 +1,5 @@
 CREATE OR ALTER FUNCTION [tdq].[alpha_BoxText]
+--TacticalDQ by DJ Olsen https://github.com/davolsen/tacticaldq
 /*<object><sequence>10</sequence></object>*/
 (
 	@ObjectName nvarchar(128)

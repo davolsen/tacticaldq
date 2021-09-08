@@ -1,3 +1,4 @@
+--TacticalDQ by DJ Olsen https://github.com/davolsen/tacticaldq
 CREATE TABLE tdq.alpha_Box(
 	ObjectName nvarchar(128) NOT NULL PRIMARY KEY,
 	ObjectType char(4) NOT NULL,
