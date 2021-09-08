@@ -49,6 +49,7 @@ CREATE OR ALTER PROC [tdq].[alpha_Refresh](
 			IF @TempCaseTableObjectID IS NOT NULL BEGIN
 				PRINT 'Measurement taken. Merge into case table';
 				SET @SQL = [tdq].[alpha_CasesMergeStatement](@TempCaseTableName,@MeasureID,@MeasurementID);
+			PRINT @SQL;
 				EXECUTE(@SQL);
 
 				PRINT 'Update measurement entry';
@@ -83,9 +84,10 @@ CREATE OR ALTER PROC [tdq].[alpha_Refresh](
 				@Receipients	=@MeasureOwner
 				,@Subject		='Error taking measurement.'
 				,@TemplateName	='MailTemplateMeasureError'
-				,@Parameter1	=@MeasureID
-				,@Parameter2	=@MeasurementID
-				,@Parameter3	=@ErrorMessage
+				,@Parameter1	=@MeasureCode
+				,@Parameter2	=@MeasureID
+				,@Parameter3	=@MeasurementID
+				,@Parameter4	=@ErrorMessage
 		END;
 	END CATCH;
 

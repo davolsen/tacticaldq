@@ -43,5 +43,3 @@ PRINT @x
 PRINT LEN(@x);
 PRINT DATALENGTH(@x);
 
-
-select REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE('This?is<a:test','<','_'),'>','_'),':','_'),'"','_'),'/','_'),'\','_'),'|','_'),'?','_'),'*','_');

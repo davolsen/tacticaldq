@@ -22,7 +22,7 @@ CREATE OR ALTER PROC [tdq].[alpha_MailSend](
 			AND sysmail_profile.name	=@profile_name
 	) BEGIN
 		BEGIN TRY
-			IF @TemplateName IS NOT NULL SET @Body = [tdq].[alpha_BoxText]('@TemplateName');
+			IF @TemplateName IS NOT NULL SET @Body = [tdq].[alpha_BoxText](@TemplateName);
 			IF @Body IS NULL THROW 50000, 'Message body or valid template name not supplied.', 1;
 			SET @Body = REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(@Body
 				,'\$PARAMETER','$PARAMETER$ESCAPE$')

@@ -69,7 +69,7 @@ BEGIN
 					+IIF(ColumnList.column_id > @MaxColumns,'=','')+''''
 					+','
 					+IIF(TYPE_NAME(user_type_id) IN ('sql_variant','xml','hierarchyid','geometry','geography'),'CAST([','')
-					+IIF(TYPE_NAME(user_type_id) NOT IN ('image', 'timestamp'),name,'CANNOT CONVERT IMAGE OR TIMESTAMP')
+					+'['+IIF(TYPE_NAME(user_type_id) NOT IN ('image', 'timestamp'),name,'CANNOT CONVERT IMAGE OR TIMESTAMP')+']'
 					+IIF(TYPE_NAME(user_type_id) IN ('sql_variant','xml','hierarchyid','geometry','geography'),'] AS nvarchar(4000))','')
 					+IIF(ColumnList.column_id > @MaxColumns AND ColumnList.column_id = ColumnList.ColumnCount,')','')
 				,ColumnList.column_id

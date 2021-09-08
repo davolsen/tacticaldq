@@ -1,4 +1,5 @@
 CREATE OR ALTER PROCEDURE [tdq].[alpha_Teardown](
+/*<object><sequence>103</sequence></object>*/
 	@PackFirst	bit	=1
 	,@Confirm	bit	=0
 ) AS BEGIN
@@ -6,7 +7,15 @@ CREATE OR ALTER PROCEDURE [tdq].[alpha_Teardown](
 	IF @Confirm		=0 THROW 50000, 'The confirm parameter must be set to 1', 1
 	IF @PackFirst	=1 EXEC [tdq].[alpha_Pack]
 	
-	BEGIN TRY	
+	BEGIN TRY
+		PRINT 'Turn off system versioning';
+		ALTER TABLE [tdq].[alpha_Cases] SET (SYSTEM_VERSIONING = OFF);
+
+		DECLARE @job_name nvarchar(4000) = [tdq].[alpha_BoxText]('AgentJobName');
+		PRINT 'Stop and disable agent job';
+		EXEC msdb.dbo.sp_stop_job @Job_name = @job_name;
+		EXEC msdb.dbo.sp_update_job @Job_name = @job_name, @enabled = 0;
+
 		PRINT 'Get standard objects';
 		DECLARE
 			@ObjectName		nvarchar(128)
@@ -39,13 +48,19 @@ CREATE OR ALTER PROCEDURE [tdq].[alpha_Teardown](
 							WHEN 'P ' THEN 'PROC' END
 						+' ['+@HomeSchema+'].['+@ObjectName+']'
 			PRINT @SQL;
-			EXEC @SQL;
+			EXEC (@SQL);
 			FETCH NEXT FROM ObjectList INTO @ObjectName, @ObjectType;
 		END;
 
-		PRINT 'Drop Agent Job';
-		DECLARE @job_name nvarchar(4000) = [tdq].[alpha_BoxText]('AgentJobName');
+		PRINT 'Delete Agent Job';
 		IF EXISTS (SELECT 1 FROM msdb.dbo.sysjobs WHERE name = @job_name) EXEC msdb.dbo.sp_delete_job @job_name = @job_name;
+
+		PRINT 'Delete mail profiles';
+		DECLARE @profile_name	nvarchar(4000)	=[tdq].[alpha_BoxText]('MailProfileName')
+		DECLARE @profile_id		int				=(SELECT TOP 1 profile_id FROM msdb.dbo.sysmail_profile WHERE name = @profile_name);
+		IF @profile_id IS NOT NULL EXEC msdb.dbo.sysmail_delete_profile_sp @profile_id = @profile_id, @force_delete = 1;
+		DECLARE @account_id int =(SELECT TOP 1 account_id FROM msdb.dbo.sysmail_account WHERE name = @profile_name);
+		IF @account_id IS NOT NULL EXEC msdb.dbo.sysmail_delete_account_sp @account_id = @account_id;
 
 	END TRY
 	BEGIN CATCH

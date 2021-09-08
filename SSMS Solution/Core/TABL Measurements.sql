@@ -1,11 +1,10 @@
-CREATE TABLE [tdq].[alpha_Measurements](
-/*<object><sequence>1</sequence></object>*/
-	MeasurementID				int IDENTITY(1,1)	NOT NULL	PRIMARY KEY CLUSTERED
-	,MeasureID					uniqueidentifier	NOT NULL
-	,TimestampStarted			datetimeoffset(0)	NOT NULL	DEFAULT (sysdatetimeoffset())
-	,TimestampCompleted			datetimeoffset(0)	NULL
-	,OutputChecksum				int					NULL
-	,CaseCount					int					NULL
-	,LastChangedMeasurementID	int					NULL
+CREATE TABLE tdq.alpha_Measurements(
+	MeasurementID int IDENTITY(1,1) NOT NULL PRIMARY KEY,
+	MeasureID uniqueidentifier NOT NULL,
+	TimestampStarted datetimeoffset(0) NOT NULL DEFAULT (sysdatetimeoffset()),
+	TimestampCompleted datetimeoffset(0) NULL,
+	Published bit NOT NULL DEFAULT ((0)),
+	Unpublished bit NOT NULL DEFAULT ((0))
 );
-CREATE INDEX [alpha_Measurements_MeasureID_TimestampCompleted_Desc] ON [tdq].[alpha_Measurements] (MeasureID, TimestampCompleted DESC);
+GO;
+CREATE NONCLUSTERED INDEX IX_Measurements_MeasureID_TimestampCompleted_Desc ON tdq.alpha_Measurements(MeasureID ASC, TimestampCompleted DESC);

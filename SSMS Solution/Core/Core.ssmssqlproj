@@ -127,6 +127,12 @@
           <AssociatedConnUserName />
           <FullPath>CODE Unpack.sql</FullPath>
         </FileNode>
+        <FileNode Name="TABL Box.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:JONQUIL\SQLEXPRESS:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>JONQUIL\SQLEXPRESS</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>TABL Box.sql</FullPath>
+        </FileNode>
         <FileNode Name="TABL Cases.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:JONQUIL\SQLEXPRESS:True</AssociatedConnectionMoniker>
           <AssociatedConnSrvName>JONQUIL\SQLEXPRESS</AssociatedConnSrvName>
@@ -174,6 +180,12 @@
           <AssociatedConnSrvName>JONQUIL\SQLEXPRESS</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>VIEW ReportCasesXML.sql</FullPath>
+        </FileNode>
+        <FileNode Name="VIEW ReportLog.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:JONQUIL\SQLEXPRESS:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>JONQUIL\SQLEXPRESS</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>VIEW ReportLog.sql</FullPath>
         </FileNode>
         <FileNode Name="VIEW ReportMeasurementsDaily.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:JONQUIL\SQLEXPRESS:True</AssociatedConnectionMoniker>

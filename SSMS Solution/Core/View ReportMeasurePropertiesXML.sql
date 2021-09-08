@@ -7,7 +7,7 @@ WITH
 			,[Measure!1!id]		=MeasureID
 			,PropertyTag		=2
 			,[Property!2!name]	=PropertyName
-			,[Property!2!value]	=PropertyName
+			,[Property!2!value]	=PropertyValue
 		FROM [tdq].[alpha_ReportMeasureProperties]
 	)
 	,ExplicitLayout AS (
