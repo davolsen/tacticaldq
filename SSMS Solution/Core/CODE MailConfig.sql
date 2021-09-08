@@ -20,11 +20,9 @@ CREATE OR ALTER PROC [tdq].[alpha_MailConfig](
 	END;
 	ELSE PRINT 'Mail already enabled';
 
-	DECLARE
-		@profile_name	nvarchar(4000)	=DB_NAME()+'_[tdq].[alpha_Mail]'--needed for bootstrap/unpack scripting
-		,@profile_id	int
-	SET @profile_name					=REPLACE(REPLACE(REPLACE(REPLACE(@profile_name,'[',''),']',''),'.','_'),'dbo_','');
-	SET @profile_id						=(SELECT TOP 1 profile_id FROM msdb.dbo.sysmail_profile WHERE name = @profile_name);
+	DECLARE	@profile_name	nvarchar(4000)	=DB_NAME()+'_[tdq].[alpha_Mail]';--needed for bootstrap/unpack scripting
+	SET		@profile_name					=REPLACE(REPLACE(REPLACE(REPLACE(@profile_name,'[',''),']',''),'.','_'),'dbo_','');
+	DECLARE	@profile_id		int				=(SELECT TOP 1 profile_id FROM msdb.dbo.sysmail_profile WHERE name = @profile_name);
 	IF @profile_id IS NOT NULL BEGIN
 		PRINT 'Mail profile already exists';
 		IF @CheckOnly = 0 EXEC msdb.dbo.sysmail_delete_profile_sp @profile_id = @profile_id, @force_delete = 1;
