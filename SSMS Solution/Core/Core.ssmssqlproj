@@ -157,6 +157,12 @@
           <AssociatedConnUserName />
           <FullPath>TABL Measurements.sql</FullPath>
         </FileNode>
+        <FileNode Name="VIEW LogReportXML.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:JONQUIL\SQLEXPRESS:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>JONQUIL\SQLEXPRESS</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>VIEW LogReportXML.sql</FullPath>
+        </FileNode>
         <FileNode Name="VIEW Measures.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:JONQUIL\SQLEXPRESS:True</AssociatedConnectionMoniker>
           <AssociatedConnSrvName>JONQUIL\SQLEXPRESS</AssociatedConnSrvName>

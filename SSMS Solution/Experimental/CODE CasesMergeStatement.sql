@@ -72,11 +72,15 @@ BEGIN
 	WHERE column_id = (SELECT MAX(column_id) FROM Statements);
 
 	SET @SQL = '
-		WITH NewCases AS (SELECT CaseChecksum=BINARY_CHECKSUM(*),* FROM '+@TempCaseTableName+')
+		WITH NewCases AS (
+			SELECT
+				BINARY_CHECKSUM(*) CaseChecksum
+				,*
+			FROM '+@TempCaseTableName+')
 		MERGE [tdq].[alpha_Cases] CurrentCases
-		USING NewCases ON NewCases.CaseChecksum = CurrentCases.CaseChecksum AND MeasureID = '''+CAST(@MeasureID AS nvarchar(36))+'''
-		WHEN NOT MATCHED THEN INSERT (MeasurementID,MeasureID,CaseChecksum,'+@InsertColumns+') VALUES ('+CAST(@MeasurementID AS nvarchar)+','''+CAST(@MeasureID AS nvarchar(36))+''',CaseChecksum,'+@SelectColumns+')
-		WHEN NOT MATCHED BY SOURCE AND MeasureID = '''+CAST(@MeasureID AS nvarchar(36))+''' THEN DELETE;
+		USING NewCases ON NewCases.CaseChecksum = CurrentCases.CaseChecksum AND EXISTS(SELECT 1 FROM [tdq].[alpha_Measurements] WHERE MeasurementID = CurrentCases.MeasurementID AND MeasureID = '''+CAST(@MeasureID AS nvarchar(36))+''')
+		WHEN NOT MATCHED THEN INSERT (MeasurementID,CaseChecksum,'+@InsertColumns+') VALUES ('+CAST(@MeasurementID AS nvarchar)+',CaseChecksum,'+@SelectColumns+')
+		WHEN NOT MATCHED BY SOURCE AND EXISTS(SELECT 1 FROM [tdq].[alpha_Measurements] WHERE MeasurementID = CurrentCases.MeasurementID AND MeasureID = '''+CAST(@MeasureID AS nvarchar(36))+''') THEN DELETE;
 	'
 	RETURN @SQL;
 END;
