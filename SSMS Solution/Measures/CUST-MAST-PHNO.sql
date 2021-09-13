@@ -15,3 +15,5 @@ FROM WorldWideImporters.Sales.Customers
 WHERE
 	PhoneNumber NOT LIKE '([0-9][0-9][0-9]) [0-9][0-9][0-9]-[0-9][0-9][0-9][0-9]'
 	OR PhoneNumber = '(000) 000-0000';
+GO
+SELECT * FROM [tdq].[alpha_measure_CUST-MAST-PHNO];

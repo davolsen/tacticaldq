@@ -22,3 +22,5 @@ FROM
 WHERE
 	LEFT(CustomerName,LEN(BuyingGroupName)) <> BuyingGroupName
 	OR EXISTS (SELECT 1 FROM WorldWideImporters.Sales.BuyingGroups WHERE Customers.BuyingGroupID IS NULL AND LEFT(CustomerName,LEN(BuyingGroupName)) = BuyingGroupName);
+GO
+SELECT * FROM [tdq].[alpha_measure_CUST-MAST-BGRP] ;

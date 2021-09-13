@@ -1,4 +1,4 @@
-CREATE OR ALTER FUNCTION [tdq].[alpha_CasesSummary]
+CREATE OR ALTER FUNCTION [tdq].[alpha_CasesSummaryOld]
 --TacticalDQ by DJ Olsen https://github.com/davolsen/tacticaldq
 /*<object><sequence>10</sequence></object>*/
 (
@@ -10,13 +10,13 @@ RETURNS TABLE AS RETURN (
 	WITH
 		CasesOpening AS (
 			SELECT CaseID
-			FROM [tdq].[alpha_Cases] FOR SYSTEM_TIME AS OF @BeginUTC Cases
-			WHERE EXISTS (SELECT 1 FROM [tdq].[alpha_Measurements] WHERE MeasurementID = Cases.MeasurementID AND MeasureID = @MeasureID)
+			FROM [tdq].[alpha_Cases] FOR SYSTEM_TIME AS OF @BeginUTC
+			WHERE MeasureID = @MeasureID
 		)
 		,CasesClosing AS (
 			SELECT CaseID
-			FROM [tdq].[alpha_Cases] FOR SYSTEM_TIME AS OF @EndUTC Cases
-			WHERE EXISTS (SELECT 1 FROM [tdq].[alpha_Measurements] WHERE MeasurementID = Cases.MeasurementID AND MeasureID = @MeasureID)
+			FROM [tdq].[alpha_Cases] FOR SYSTEM_TIME AS OF @EndUTC
+			WHERE MeasureID = @MeasureID
 		)
 	SELECT
 		CasesOpening	=COUNT(CasesOpening.CaseID)
@@ -27,4 +27,4 @@ RETURNS TABLE AS RETURN (
 		FULL OUTER JOIN CasesClosing ON CasesClosing.CaseID = CasesOpening.CaseID
 );
 GO
-SELECT * FROM [tdq].[alpha_CasesSummary]('EE71C78F-34F2-4C30-AB81-16BF1C673FE0','2021-08-31','2021-09-01')
+SELECT * FROM [tdq].[alpha_CasesSummaryOld]('EE71C78F-34F2-4C30-AB81-16BF1C673FE0','2021-08-31','2021-09-01')

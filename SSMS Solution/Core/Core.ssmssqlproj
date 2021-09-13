@@ -97,6 +97,12 @@
           <AssociatedConnUserName />
           <FullPath>CODE RefreshFromQueue.sql</FullPath>
         </FileNode>
+        <FileNode Name="CODE RefreshTempColumns.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:JONQUIL\SQLEXPRESS:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>JONQUIL\SQLEXPRESS</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>CODE RefreshTempColumns.sql</FullPath>
+        </FileNode>
         <FileNode Name="CODE RoundDate.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:JONQUIL\SQLEXPRESS:True</AssociatedConnectionMoniker>
           <AssociatedConnSrvName>JONQUIL\SQLEXPRESS</AssociatedConnSrvName>
@@ -174,6 +180,12 @@
           <AssociatedConnSrvName>JONQUIL\SQLEXPRESS</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>VIEW ReportCaseLists.sql</FullPath>
+        </FileNode>
+        <FileNode Name="VIEW ReportCases.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:JONQUIL\SQLEXPRESS:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>JONQUIL\SQLEXPRESS</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>VIEW ReportCases.sql</FullPath>
         </FileNode>
         <FileNode Name="VIEW ReportCasesXML.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:JONQUIL\SQLEXPRESS:True</AssociatedConnectionMoniker>

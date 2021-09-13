@@ -33,32 +33,34 @@ CREATE OR ALTER PROC [tdq].[alpha_Refresh](
 			PRINT 'Measure valid, start refresh';
 			INSERT INTO [tdq].[alpha_Log](LogSource, MeasureID, MeasurementID, Code, LogMessage)
 			VALUES (OBJECT_NAME(@@PROCID), @MeasureID, @MeasurementID, @MeasureCode, 'Starting measurement refresh from '+ISNULL(@ObjectName,'<UNEXPECTED: no object name>'));
+				
+			BEGIN TRAN;
+				PRINT 'Create new measurement entry';
+				DECLARE @MeasurementIDTable TABLE(MeasurementID int);
+				INSERT INTO [tdq].[alpha_Measurements](MeasureID)
+				OUTPUT inserted.MeasurementID INTO @MeasurementIDTable
+				VALUES (@MeasureID);
+				SET @MeasurementID =(SELECT TOP 1 MeasurementID FROM @MeasurementIDTable);
 
-			PRINT 'Create new measurement entry';
-			DECLARE @MeasurementIDTable TABLE(MeasurementID int);
-			INSERT INTO [tdq].[alpha_Measurements](MeasureID)
-			OUTPUT inserted.MeasurementID INTO @MeasurementIDTable
-			VALUES (@MeasureID);
-			SET @MeasurementID =(SELECT TOP 1 MeasurementID FROM @MeasurementIDTable);
+				PRINT 'Take measurement'
+				SET @SQL = 'SELECT * INTO '+@TempCaseTableName+' FROM '+@ObjectName;
+				EXEC(@SQL);
 
-			PRINT 'Take measurement'
-			SET @SQL = 'SELECT * INTO '+@TempCaseTableName+' FROM '+@ObjectName;
-			EXEC(@SQL);
-
-			PRINT 'Check measurement was taken';
-			DECLARE @TempCaseTableObjectID int =OBJECT_ID('tempdb..'+@TempCaseTableName);
-			IF @TempCaseTableObjectID IS NOT NULL BEGIN
-				PRINT 'Measurement taken. Merge into case table';
-				SET @SQL = [tdq].[alpha_CasesMergeStatement](@TempCaseTableName,@MeasureID,@MeasurementID);
-			PRINT @SQL;
-				EXECUTE(@SQL);
-
-				PRINT 'Update measurement entry';
-				UPDATE [tdq].[alpha_Measurements]
-				SET TimestampCompleted	=SYSDATETIMEOFFSET()
-				WHERE MeasurementID		=@MeasurementID;
-			END;
-
+				PRINT 'Check measurement was taken';
+				DECLARE @TempCaseTableObjectID int =OBJECT_ID('tempdb..'+@TempCaseTableName);
+				IF @TempCaseTableObjectID IS NOT NULL BEGIN
+					PRINT 'Measurement taken. Merge into case table';
+					SET @SQL = [tdq].[alpha_CasesMergeStatement](@TempCaseTableName,@MeasureID,@MeasurementID);
+					PRINT @SQL;
+					EXECUTE(@SQL);
+					PRINT 'Update measurement entry';
+					UPDATE [tdq].[alpha_Measurements]
+					SET
+						TimestampCompleted	=SYSDATETIMEOFFSET()
+						,CaseColumns		=[tdq].[alpha_RefreshTempColumns](@TempCaseTableName)
+					WHERE MeasurementID		=@MeasurementID;
+				END;
+			COMMIT;
 			PRINT 'Log complete';
 			INSERT INTO [tdq].[alpha_Log](LogSource, MeasureID, MeasurementID, Code, LogMessage)
 			VALUES (OBJECT_NAME(@@PROCID), @MeasureID, @MeasurementID, @MeasureCode, 'Completed measurement refresh.');
@@ -71,11 +73,7 @@ CREATE OR ALTER PROC [tdq].[alpha_Refresh](
 	END TRY
 	BEGIN CATCH
 		PRINT 'Fatal error encountered';
-		IF @MeasurementID IS NOT NULL BEGIN
-			PRINT 'Delete any data captured';
-			DELETE FROM [tdq].[alpha_Measurements] WHERE MeasurementID = @MeasurementID;
-			DELETE FROM [tdq].[alpha_Cases] WHERE MeasurementID = @MeasurementID;
-		END;
+		IF @@TRANCOUNT > 0 ROLLBACK;
 		INSERT INTO [tdq].[alpha_Log](LogSource, MeasureID, MeasurementID, Code, Error, LogMessage)
 		VALUES(OBJECT_NAME(@@PROCID), @MeasureID, @MeasurementID, ERROR_NUMBER(), 1, ERROR_MESSAGE());
 		IF [tdq].[alpha_BoxBit]('MailErrorReporting') = 1 AND @MeasureOwner IS NOT NULL BEGIN

@@ -14,7 +14,7 @@ CREATE OR ALTER PROCEDURE [tdq].[alpha_Teardown](
 
 		DECLARE @job_name nvarchar(4000) = [tdq].[alpha_BoxText]('AgentJobName');
 		PRINT 'Stop and disable agent job';
-		EXEC msdb.dbo.sp_stop_job @Job_name = @job_name;
+		--EXEC msdb.dbo.sp_stop_job @Job_name = @job_name;
 		EXEC msdb.dbo.sp_update_job @Job_name = @job_name, @enabled = 0;
 
 		PRINT 'Get standard objects';

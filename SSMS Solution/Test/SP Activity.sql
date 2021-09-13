@@ -135,16 +135,16 @@ EXEC Activity
 	@LowerBreakProportion	=0
 	,@UpperBreakProportion	=.1
 	,@LowerFixProportion	=0
-	,@UpperFixProportion	=0
+	,@UpperFixProportion	=.1
 	,@TestOnly				=1
-	--,@Only					='[tdq].[alpha_measure_CUST-TRAN-ORDQ]'
+	--,@Only					='[tdq].[alpha_measure_CUST-MAST-BGRP]'
 /*
 EXEC Activity
 	@LowerBreakProportion	=0
 	,@UpperBreakProportion	=.1
 	,@LowerFixProportion	=0
 	,@UpperFixProportion	=0
-	,@TestOnly				=1
+	,@TestOnly				=0
 */
 
 --BEGIN TRAN

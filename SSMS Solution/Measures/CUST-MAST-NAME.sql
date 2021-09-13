@@ -22,3 +22,5 @@ WHERE
 		CustomerName LIKE '%, %'
 		AND CustomerName NOT LIKE '%(%,%)%'
 	);
+GO
+SELECT * FROM [tdq].[alpha_measure_CUST-MAST-NAME];
