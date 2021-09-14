@@ -11,8 +11,9 @@ SELECT TOP 1000
 	,Error
 	,LogMessage
 	,Measures.MeasureCode
-	,MeasurementStarted		=TimestampStarted
-	,MeasurementCompleted	=TimestampCompleted
+	,MeasurementStarted			=TimestampStarted
+	,MeasurementCompleted		=TimestampCompleted
+	,MeasurementDurationSeconds	=DATEDIFF(SECOND,TimestampStarted,TimestampCompleted)
 FROM
 	[tdq].[alpha_Log]						LogTable
 	LEFT JOIN [tdq].[alpha_Measures]		Measures		ON Measures.MeasureID			=LogTable.MeasureID

@@ -46,7 +46,6 @@ FROM z
 
 SELECT * FROM [tdq].[alpha_CasesSummary]('3A4F8C51-31B9-4612-AD70-FF6CFD5A0E9E',CAST('2021-09-14 09:11 +12:00' as datetimeoffset) AT TIME ZONE 'UTC',CAST('2021-09-14 09:12 +12:00' as datetimeoffset) AT TIME ZONE 'UTC')
 
-select * from [tdq].[alpha_ReportMeasurementsDetailOld]
 select * from [tdq].[alpha_ReportMeasurementsDetail]
 
 select checksum(*) casechecksum from [tdq].[alpha_measure_CUST-MAST-BGRP]
