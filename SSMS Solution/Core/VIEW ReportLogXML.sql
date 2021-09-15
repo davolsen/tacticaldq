@@ -7,16 +7,16 @@ SELECT (
 		,Timestamp				=LogTimestamp
 		,[Source]				=LogSource
 		,MeasureID
-		,MeasurementID
+		,RefreshID
 		,Code
 		,Error
 		,[Message]				=LogMessage
 		,MeasureCode
-		,MeasurementStarted
-		,MeasurementCompleted
-		,MeasurementDurationSeconds
+		,RefreshStarted
+		,RefreshCompleted
+		,RefreshDurationSeconds
 	FROM [tdq].[alpha_ReportLog]
-	FOR XML PATH('Entry'), ROOT('Log'), TYPE
+	FOR XML PATH('Entry'), ROOT('ReportLog'), TYPE
 ) AS ReportXML;
 GO
 SELECT * FROM [tdq].[alpha_ReportLogXML];

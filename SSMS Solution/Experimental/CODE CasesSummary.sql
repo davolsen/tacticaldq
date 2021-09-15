@@ -11,12 +11,12 @@ RETURNS TABLE AS RETURN (
 		CasesOpening AS (
 			SELECT CaseID
 			FROM [tdq].[alpha_Cases] FOR SYSTEM_TIME AS OF @BeginUTC Cases
-			WHERE EXISTS (SELECT 1 FROM [tdq].[alpha_Measurements] WHERE MeasurementID = Cases.MeasurementID AND MeasureID = @MeasureID)
+			WHERE EXISTS (SELECT 1 FROM [tdq].[alpha_Refreshes] WHERE RefreshID = Cases.RefreshID AND MeasureID = @MeasureID)
 		)
 		,CasesClosing AS (
 			SELECT CaseID
 			FROM [tdq].[alpha_Cases] FOR SYSTEM_TIME AS OF @EndUTC Cases
-			WHERE EXISTS (SELECT 1 FROM [tdq].[alpha_Measurements] WHERE MeasurementID = Cases.MeasurementID AND MeasureID = @MeasureID)
+			WHERE EXISTS (SELECT 1 FROM [tdq].[alpha_Refreshes] WHERE RefreshID = Cases.RefreshID AND MeasureID = @MeasureID)
 		)
 	SELECT
 		CasesOpening	=COUNT(CasesOpening.CaseID)

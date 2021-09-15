@@ -86,7 +86,8 @@ FROM
 
 WHERE
 	SCHEMA_NAME(schema_id) = [tdq].[alpha_BoxText]('HomeSchema')
-	AND name LIKE [tdq].[alpha_BoxText]('HomePrefix')+'%';
+	AND name LIKE [tdq].[alpha_BoxText]('HomePrefix')+'%'
+	AND temporal_type <> 1;
 GO
 SELECT * FROM [tdq].[alpha_PackTableDefinitions];
 
@@ -98,4 +99,4 @@ SELECT * FROM [tdq].[alpha_PackTableDefinitions];
 
 --select * from sys.tempor
 
---'SYSTEM_VERSIONING = ON ( HISTORY_TABLE = [tdq].[alpha_CaseHistory] )'
+--'SYSTEM_VERSIONING = ON ( HISTORY_TABLE = [tdq].[alpha_CasesResolved] )'

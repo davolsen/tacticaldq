@@ -55,12 +55,6 @@
           <AssociatedConnUserName />
           <FullPath>CODE BoxText.sql</FullPath>
         </FileNode>
-        <FileNode Name="CODE CasesMergeStatement.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:JONQUIL\SQLEXPRESS:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>JONQUIL\SQLEXPRESS</AssociatedConnSrvName>
-          <AssociatedConnUserName />
-          <FullPath>CODE CasesMergeStatement.sql</FullPath>
-        </FileNode>
         <FileNode Name="CODE CasesSummary.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:JONQUIL\SQLEXPRESS:True</AssociatedConnectionMoniker>
           <AssociatedConnSrvName>JONQUIL\SQLEXPRESS</AssociatedConnSrvName>
@@ -96,6 +90,12 @@
           <AssociatedConnSrvName>JONQUIL\SQLEXPRESS</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>CODE RefreshFromQueue.sql</FullPath>
+        </FileNode>
+        <FileNode Name="CODE RefreshMergeStatement.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:JONQUIL\SQLEXPRESS:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>JONQUIL\SQLEXPRESS</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>CODE RefreshMergeStatement.sql</FullPath>
         </FileNode>
         <FileNode Name="CODE RefreshTempColumns.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:JONQUIL\SQLEXPRESS:True</AssociatedConnectionMoniker>
@@ -187,6 +187,18 @@
           <AssociatedConnUserName />
           <FullPath>VIEW ReportCases.sql</FullPath>
         </FileNode>
+        <FileNode Name="VIEW ReportCasesDaily.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:JONQUIL\SQLEXPRESS:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>JONQUIL\SQLEXPRESS</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>VIEW ReportCasesDaily.sql</FullPath>
+        </FileNode>
+        <FileNode Name="VIEW ReportCasesDailyXML.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:JONQUIL\SQLEXPRESS:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>JONQUIL\SQLEXPRESS</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>VIEW ReportCasesDailyXML.sql</FullPath>
+        </FileNode>
         <FileNode Name="VIEW ReportCasesXML.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:JONQUIL\SQLEXPRESS:True</AssociatedConnectionMoniker>
           <AssociatedConnSrvName>JONQUIL\SQLEXPRESS</AssociatedConnSrvName>
@@ -204,24 +216,6 @@
           <AssociatedConnSrvName>JONQUIL\SQLEXPRESS</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>VIEW ReportLogXML.sql</FullPath>
-        </FileNode>
-        <FileNode Name="VIEW ReportMeasurementsDaily.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:JONQUIL\SQLEXPRESS:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>JONQUIL\SQLEXPRESS</AssociatedConnSrvName>
-          <AssociatedConnUserName />
-          <FullPath>VIEW ReportMeasurementsDaily.sql</FullPath>
-        </FileNode>
-        <FileNode Name="VIEW ReportMeasurementsDailyXML.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:JONQUIL\SQLEXPRESS:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>JONQUIL\SQLEXPRESS</AssociatedConnSrvName>
-          <AssociatedConnUserName />
-          <FullPath>VIEW ReportMeasurementsDailyXML.sql</FullPath>
-        </FileNode>
-        <FileNode Name="VIEW ReportMeasurementsDetail.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:JONQUIL\SQLEXPRESS:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>JONQUIL\SQLEXPRESS</AssociatedConnSrvName>
-          <AssociatedConnUserName />
-          <FullPath>VIEW ReportMeasurementsDetail.sql</FullPath>
         </FileNode>
         <FileNode Name="VIEW ReportMeasureProperties.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:JONQUIL\SQLEXPRESS:True</AssociatedConnectionMoniker>
@@ -246,6 +240,12 @@
           <AssociatedConnSrvName>JONQUIL\SQLEXPRESS</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>VIEW ReportMeasuresXML.sql</FullPath>
+        </FileNode>
+        <FileNode Name="VIEW ReportRefreshesDetail.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:JONQUIL\SQLEXPRESS:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>JONQUIL\SQLEXPRESS</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>VIEW ReportRefreshesDetail.sql</FullPath>
         </FileNode>
         <FileNode Name="VIEW ScheduleCurrent.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:JONQUIL\SQLEXPRESS:True</AssociatedConnectionMoniker>

@@ -7,30 +7,30 @@ CREATE OR ALTER PROC [tdq].[alpha_RefreshFromQueue] AS BEGIN
 
 	BEGIN TRY
 		SET NOCOUNT ON;
-		PRINT 'Get next measurement job from queue';
+		PRINT 'Get next refresh task from queue';
 		DECLARE
-			@Job				xml--from the queue
+			@Message			xml--from the queue
 			,@MessageTypeName	nvarchar(256);--from the queue
 		RECEIVE TOP(1)
-			@Job				=message_body
+			@Message			=message_body
 			,@MessageTypeName	=message_type_name
-		FROM [tdq].[alpha_MeasurementJobs];
+		FROM [tdq].[alpha_RefreshesPending];
 		DECLARE @ResultCount int = @@ROWCOUNT;
 
 		IF @MessageTypeName = 'DEFAULT' BEGIN--DFAULT is a job. Other message types are usually conversation statuses
 			PRINT 'Get measure details';
 			DECLARE
-				@MeasureCode	nvarchar(50)		=@Job.value('(/measurement/code/text())[1]', 'nvarchar(128)')
-				,@MeasureID		uniqueidentifier	=@Job.value('(/measurement/id/text())[1]', 'nvarchar(128)')
+				@MeasureCode	nvarchar(50)		=@Message.value('(/refresn/code/text())[1]', 'nvarchar(128)')
+				,@MeasureID		uniqueidentifier	=@Message.value('(/refresh/id/text())[1]', 'nvarchar(128)')
 			PRINT 'Log job and start a refresh';
 			INSERT [tdq].[alpha_Log](LogSource, MeasureID, Code, LogMessage)
-			VALUES (OBJECT_NAME(@@PROCID), @MeasureID, @MeasureCode, 'Measurement refresh job started');
+			VALUES (OBJECT_NAME(@@PROCID), @MeasureID, @MeasureCode, 'Measure refresh started');
 			EXEC [tdq].[alpha_Refresh] @MeasureID = @MeasureID
 		END;
 		ELSE IF @ResultCount = 0 BEGIN--no job
-			PRINT 'No measurement jobs in queue';
+			PRINT 'No measure refresh tasks in queue';
 			INSERT INTO [tdq].[alpha_Log](LogSource, LogMessage)
-			VALUES (OBJECT_NAME(@@PROCID), 'No measurement refresh jobs in the queue');
+			VALUES (OBJECT_NAME(@@PROCID), 'No measures to refresh waiting in queue');
 		END;
 	END TRY
 	BEGIN CATCH--log error

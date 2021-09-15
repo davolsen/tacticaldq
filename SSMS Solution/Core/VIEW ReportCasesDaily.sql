@@ -1,4 +1,4 @@
-CREATE OR ALTER VIEW [tdq].[alpha_ReportMeasurementsDaily] AS
+CREATE OR ALTER VIEW [tdq].[alpha_ReportCasesDaily] AS
 --TacticalDQ by DJ Olsen https://github.com/davolsen/tacticaldq
 /*<object><sequence>50</sequence></object>*/
 WITH
@@ -39,6 +39,6 @@ FROM
 GO
 
 --SET DATEFIRST 1
-SELECT * FROM [tdq].[alpha_ReportMeasurementsDaily]
+SELECT * FROM [tdq].[alpha_ReportCasesDaily]
 --WHERE MeasureID = 'CE85AD9E-6560-4CBF-A6FF-32A391FAE2B7'
 ORDER BY ReportDateClosing DESC, MeasureID;

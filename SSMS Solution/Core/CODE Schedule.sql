@@ -4,7 +4,7 @@ CREATE OR ALTER PROC [tdq].[alpha_Schedule] AS BEGIN
 	SET NOCOUNT ON;
 	DECLARE
 		@ConversationID		uniqueidentifier
-		,@Job				xml--Put on the queue
+		,@Message				xml--Put on the queue
 		,@MeasureID			uniqueidentifier--goes in the job
 		,@MeasureCode		nvarchar(50)--goes in the job
 		,@ObjectName		nvarchar(128)--goes in the job
@@ -33,15 +33,15 @@ CREATE OR ALTER PROC [tdq].[alpha_Schedule] AS BEGIN
 			PRINT 'Create a job XML';
 			SET @LogJobCounter = @LogJobCounter + 1
 			SET @LogMeasureList = ISNULL(@LogMeasureList+', ','')+ISNULL(@MeasureCode, 'ERROR! no measure code')
-			SET @Job = (
+			SET @Message = (
 				SELECT
 					@MeasureID		id
 					,@MeasureCode	code
 					,@ObjectName	ObjectName
-				FOR XML PATH('measurement'), TYPE
+				FOR XML PATH('refresh'), TYPE
 			);
 			PRINT 'Add job to the queue';
-			SEND ON CONVERSATION @ConversationID MESSAGE TYPE [DEFAULT](@Job);
+			SEND ON CONVERSATION @ConversationID MESSAGE TYPE [DEFAULT](@Message);
 			PRINT 'Get next job';
 			FETCH NEXT FROM NewBatch INTO @ObjectName, @MeasureCode, @MeasureID;
 		END;
@@ -52,11 +52,11 @@ CREATE OR ALTER PROC [tdq].[alpha_Schedule] AS BEGIN
 		PRINT 'Log refresh jobs added';
 		IF @LogJobCounter > 0 BEGIN
 			INSERT INTO [tdq].[alpha_Log](LogSource, LogMessage)
-			VALUES (OBJECT_NAME(@@PROCID), 'Started new batch with '+CAST(@LogJobCounter AS nvarchar)+' measurement refresh jobs: '+ISNULL(@LogMeasureList,'ERROR! could not get measure codes'));
+			VALUES (OBJECT_NAME(@@PROCID), 'Queued '+CAST(@LogJobCounter AS nvarchar)+' measures for refresh: '+ISNULL(@LogMeasureList,'ERROR! could not get measure codes'));
 		END;
 		ELSE BEGIN
 			INSERT INTO [tdq].[alpha_Log](LogSource, LogMessage)
-			VALUES (OBJECT_NAME(@@PROCID), 'No measurements need to be refreshed.');
+			VALUES (OBJECT_NAME(@@PROCID), 'No measures need to be refreshed.');
 		END;
 	END TRY
 	BEGIN CATCH

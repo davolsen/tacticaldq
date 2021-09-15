@@ -6,18 +6,18 @@ SELECT TOP 1000
 	,LogTimestamp
 	,LogSource
 	,LogTable.MeasureID
-	,LogTable.MeasurementID
+	,LogTable.RefreshID
 	,Code
 	,Error
 	,LogMessage
 	,Measures.MeasureCode
-	,MeasurementStarted			=TimestampStarted
-	,MeasurementCompleted		=TimestampCompleted
-	,MeasurementDurationSeconds	=DATEDIFF(SECOND,TimestampStarted,TimestampCompleted)
+	,RefreshStarted			=TimestampStarted
+	,RefreshCompleted		=TimestampCompleted
+	,RefreshDurationSeconds	=DATEDIFF(SECOND,TimestampStarted,TimestampCompleted)
 FROM
-	[tdq].[alpha_Log]						LogTable
-	LEFT JOIN [tdq].[alpha_Measures]		Measures		ON Measures.MeasureID			=LogTable.MeasureID
-	LEFT JOIN [tdq].[alpha_Measurements]	Measurements	ON Measurements.MeasurementID	=LogTable.MeasurementID
+	[tdq].[alpha_Log]					LogTable
+	LEFT JOIN [tdq].[alpha_Measures]	Measures	ON Measures.MeasureID	=LogTable.MeasureID
+	LEFT JOIN [tdq].[alpha_Refreshes]	Refresh		ON Refresh.RefreshID	=LogTable.RefreshID
 ORDER BY LogEntryID DESC;
 GO
 

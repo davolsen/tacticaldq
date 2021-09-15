@@ -2,19 +2,19 @@ CREATE OR ALTER VIEW [tdq].[alpha_ReportCases] AS
 --TacticalDQ by DJ Olsen https://github.com/davolsen/tacticaldq
 /*<object><sequence>50</sequence></object>*/
 WITH
-	Measurements AS (
+	Refreshes AS (
 		SELECT *
 		FROM
 			(
 				SELECT
-					MeasurementID
+					RefreshID
 					,MeasureID
-					,ColumnName		='CaseColumn' + CAST(ROW_NUMBER() OVER (PARTITION BY MeasurementID ORDER BY (SELECT NULL)) AS nvarchar(128))
+					,ColumnName		='CaseColumn' + CAST(ROW_NUMBER() OVER (PARTITION BY RefreshID ORDER BY (SELECT NULL)) AS nvarchar(128))
 					,ColumnValue	=SUBSTRING(value,2,LEN(value)-2)
 				FROM
-					[tdq].[alpha_Measurements]
+					[tdq].[alpha_Refreshes]
 					CROSS APPLY STRING_SPLIT(CaseColumns,',')
-			) Measurements
+			) Refreshes
 			PIVOT (
 				MAX(ColumnValue)
 				FOR ColumnName IN ([CaseColumn1],[CaseColumn2],[CaseColumn3],[CaseColumn4],[CaseColumn5],[CaseColumn6],[CaseColumn7],[CaseColumn8],[CaseColumn9])
@@ -23,7 +23,7 @@ WITH
 SELECT
 	Measures.MeasureID
 	,Measures.MeasureCode
-	,Measurements.MeasurementID
+	,Refreshes.RefreshID
 	,CaseID
 	,CaseColumn1
 	,CaseValue1
@@ -47,8 +47,8 @@ SELECT
 	,Identified
 FROM
 	[tdq].[alpha_Cases]				Cases
-	JOIN Measurements								ON Measurements.MeasurementID	=Cases.MeasurementID
-	JOIN [tdq].[alpha_Measures]		Measures		ON Measures.MeasureID			=Measurements.MeasureID;
+	JOIN Refreshes								ON Refreshes.RefreshID	=Cases.RefreshID
+	JOIN [tdq].[alpha_Measures]		Measures		ON Measures.MeasureID			=Refreshes.MeasureID;
 GO
 
 --SET DATEFIRST 1

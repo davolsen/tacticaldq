@@ -1,4 +1,4 @@
-CREATE OR ALTER VIEW [tdq].[alpha_ReportMeasurementsDailyXML] AS
+CREATE OR ALTER VIEW [tdq].[alpha_ReportCasesDailyXML] AS
 --TacticalDQ by DJ Olsen https://github.com/davolsen/tacticaldq
 /*<object><sequence>60</sequence></object>*/
 SELECT (
@@ -15,8 +15,8 @@ SELECT (
 		,CasesClosing
 		,CasesChange
 		,CasesNetChange
-	FROM [tdq].[alpha_ReportMeasurementsDaily]
-	FOR XML PATH('MeasurementDaily'), ROOT('MeasurementSummariesDaily'), TYPE
+	FROM [tdq].[alpha_ReportCasesDaily]
+	FOR XML PATH('Summary'), ROOT('ReportCasesDaily'), TYPE
 ) AS ReportXML;
 GO
-SELECT * FROM [tdq].[alpha_ReportMeasurementsDailyXML];
+SELECT * FROM [tdq].[alpha_ReportCasesDailyXML];

@@ -2,25 +2,38 @@
 <SqlWorkbenchSqlProject xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Name="Experimental">
   <Items>
     <LogicalFolder Name="Connections" Type="2" Sorted="true">
-      <Items />
+      <Items>
+        <ConnectionNode Name="JONQUIL\SQLEXPRESS:JONQUIL\temporal">
+          <Created>2021-09-15T20:00:59.2992275+12:00</Created>
+          <Type>SQL</Type>
+          <Server>JONQUIL\SQLEXPRESS</Server>
+          <UserName />
+          <Authentication>Windows Authentication</Authentication>
+          <InitialDB>TacticalDQ</InitialDB>
+          <LoginTimeout>30</LoginTimeout>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
+        </ConnectionNode>
+      </Items>
     </LogicalFolder>
     <LogicalFolder Name="Queries" Type="0" Sorted="true">
       <Items>
         <FileNode Name="CODE CasesMergeStatement.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:JONQUIL\SQLEXPRESS:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>JONQUIL\SQLEXPRESS</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>CODE CasesMergeStatement.sql</FullPath>
         </FileNode>
         <FileNode Name="CODE CasesSummary.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:JONQUIL\SQLEXPRESS:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>JONQUIL\SQLEXPRESS</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>CODE CasesSummary.sql</FullPath>
         </FileNode>
         <FileNode Name="TABL Cases.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:JONQUIL\SQLEXPRESS:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>JONQUIL\SQLEXPRESS</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>TABL Cases.sql</FullPath>
         </FileNode>

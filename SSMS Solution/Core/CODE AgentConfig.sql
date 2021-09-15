@@ -37,7 +37,7 @@ CREATE OR ALTER PROC [tdq].[alpha_AgentConfig](
 				DECLARE @jobId binary(16);
 				EXEC msdb.dbo.sp_add_job
 					@job_name				=@job_name
-					,@description			=N'Checks which measurements need to be refreshed and schedules refresh jobs.'
+					,@description			=N'Checks which measures need to be refreshed and queues a refresh task.'
 					,@category_name			=@AgentCategoryName
 					,@job_id 				=@jobId OUTPUT
 					,@Enabled				=@Enabled;
@@ -47,7 +47,7 @@ CREATE OR ALTER PROC [tdq].[alpha_AgentConfig](
 				PRINT 'Add step';
 				EXEC msdb.dbo.sp_add_jobstep
 					@job_id					= @jobId
-					,@step_name				= N'Check and schedule measurement refresh jobs'
+					,@step_name				= N'Check and schedule measure refresh tasks'
 					,@command				= N'EXEC [tdq].[alpha_Schedule]'
 					,@database_name			= @CurrentDatabase;
 

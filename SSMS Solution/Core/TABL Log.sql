@@ -4,7 +4,7 @@ CREATE TABLE tdq.alpha_Log(
 	LogTimestamp datetimeoffset(0) NOT NULL DEFAULT (sysdatetimeoffset()),
 	LogSource nvarchar(128) NULL,
 	MeasureID uniqueidentifier NULL,
-	MeasurementID int NULL,
+	RefreshID int NULL,
 	Code nvarchar(50) NULL,
 	Error bit NOT NULL DEFAULT ((0)),
 	LogMessage nvarchar(4000) NULL

@@ -46,13 +46,13 @@ WITH
 			,Today				=DATEPART(WEEKDAY,SYSDATETIME())
 		FROM MetaData
 	)
-	,Measurement AS (
+	,Refresh AS (
 		SELECT
 			MeasureID
 			,MaxTimestampStarted	=MAX(TimestampStarted)
 			,LastStartedDay			=[tdq].[alpha_RoundDate](MAX(TimestampStarted),'DAY')		
 			,LastStartedHour		=[tdq].[alpha_RoundDate](MAX(TimestampStarted),'HOUR')
-		FROM [tdq].[alpha_Measurements]
+		FROM [tdq].[alpha_Refreshes]
 		GROUP BY MeasureID
 	)
 SELECT
@@ -84,7 +84,7 @@ SELECT
 	,ReportFields					=IIF(DATALENGTH(ReportFields) > 5, ReportFields,NULL)
 FROM
 	Measures
-	LEFT JOIN Measurement ON Measurement.MeasureID = Measures.MeasureID;
+	LEFT JOIN Refresh ON Refresh.MeasureID = Measures.MeasureID;
 GO
 
 SELECT * FROM [tdq].[alpha_Measures];

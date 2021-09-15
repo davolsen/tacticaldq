@@ -1,10 +1,10 @@
-CREATE OR ALTER FUNCTION [tdq].[alpha_CasesMergeStatement]
+CREATE OR ALTER FUNCTION [tdq].[alpha_RefreshMergeStatement]
 --TacticalDQ by DJ Olsen https://github.com/davolsen/tacticaldq
 /*<object><sequence>10</sequence></object>*/
 (
 	@TempCaseTableName		nvarchar(4000)
 	,@MeasureID				uniqueidentifier
-	,@MeasurementID			int
+	,@RefreshID			int
 )
 RETURNS nvarchar(4000)
 AS
@@ -55,9 +55,9 @@ BEGIN
 						+''''
 							ELSE '' END
 					+','
-					+IIF(TYPE_NAME(user_type_id) IN ('sql_variant','xml','hierarchyid','geometry','geography'),'CAST([','')
+					+IIF(TYPE_NAME(user_type_id) IN ('sql_variant','xml','hierarchyid','geometry','geography'),'CAST(','')
 					+'['+IIF(TYPE_NAME(user_type_id) NOT IN ('image', 'timestamp'),name,'CANNOT CONVERT IMAGE OR TIMESTAMP')+']'
-					+IIF(TYPE_NAME(user_type_id) IN ('sql_variant','xml','hierarchyid','geometry','geography'),'] AS nvarchar(4000))','')
+					+IIF(TYPE_NAME(user_type_id) IN ('sql_variant','xml','hierarchyid','geometry','geography'),' AS nvarchar(4000))','')
 					+IIF(ColumnList.column_id > @MaxColumns AND ColumnList.column_id = ColumnList.ColumnCount,')','')
 				,ColumnList.column_id
 				,ColumnList.column_id + 1
@@ -75,7 +75,7 @@ BEGIN
 		WITH NewCases AS (SELECT CaseChecksum=BINARY_CHECKSUM(*),* FROM '+@TempCaseTableName+')
 		MERGE [tdq].[alpha_Cases] CurrentCases
 		USING NewCases ON NewCases.CaseChecksum = CurrentCases.CaseChecksum AND MeasureID = '''+CAST(@MeasureID AS nvarchar(36))+'''
-		WHEN NOT MATCHED THEN INSERT (MeasurementID,MeasureID,CaseChecksum,'+@InsertColumns+') VALUES ('+CAST(@MeasurementID AS nvarchar)+','''+CAST(@MeasureID AS nvarchar(36))+''',CaseChecksum,'+@SelectColumns+')
+		WHEN NOT MATCHED THEN INSERT (RefreshID,MeasureID,CaseChecksum,'+@InsertColumns+') VALUES ('+CAST(@RefreshID AS nvarchar)+','''+CAST(@MeasureID AS nvarchar(36))+''',CaseChecksum,'+@SelectColumns+')
 		WHEN NOT MATCHED BY SOURCE AND MeasureID = '''+CAST(@MeasureID AS nvarchar(36))+''' THEN DELETE;
 	'
 	RETURN @SQL;
@@ -83,5 +83,5 @@ END;
 GO
 IF OBJECT_ID('tempdb..##test') IS NOT NULL DROP TABLE ##test;
 SELECT TOP 1 * INTO ##test FROM WorldWideImporters.sales.Invoices;
-PRINT [tdq].[alpha_CasesMergeStatement]('##test',NEWID(),1337);
+PRINT [tdq].[alpha_RefreshMergeStatement]('##test',NEWID(),1337);
 --IF OBJECT_ID('tempdb..##test') IS NOT NULL DROP TABLE ##test;

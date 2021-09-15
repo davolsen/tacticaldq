@@ -1,10 +1,10 @@
-CREATE OR ALTER FUNCTION [tdq].[alpha_CasesMergeStatement]
+CREATE OR ALTER FUNCTION [tdq].[alpha_RefreshMergeStatement]
 --TacticalDQ by DJ Olsen https://github.com/davolsen/tacticaldq
 /*<object><sequence>10</sequence></object>*/
 (
 	@TempCaseTableName		nvarchar(4000)
 	,@MeasureID				uniqueidentifier
-	,@MeasurementID			int
+	,@RefreshID			int
 )
 RETURNS nvarchar(4000)
 AS
@@ -78,14 +78,14 @@ BEGIN
 				,*
 			FROM '+@TempCaseTableName+')
 		MERGE [tdq].[alpha_Cases] CurrentCases
-		USING NewCases ON NewCases.CaseChecksum = CurrentCases.CaseChecksum AND EXISTS(SELECT 1 FROM [tdq].[alpha_Measurements] WHERE MeasurementID = CurrentCases.MeasurementID AND MeasureID = '''+CAST(@MeasureID AS nvarchar(36))+''')
-		WHEN NOT MATCHED THEN INSERT (MeasurementID,CaseChecksum,'+@InsertColumns+') VALUES ('+CAST(@MeasurementID AS nvarchar)+',CaseChecksum,'+@SelectColumns+')
-		WHEN NOT MATCHED BY SOURCE AND EXISTS(SELECT 1 FROM [tdq].[alpha_Measurements] WHERE MeasurementID = CurrentCases.MeasurementID AND MeasureID = '''+CAST(@MeasureID AS nvarchar(36))+''') THEN DELETE;
+		USING NewCases ON NewCases.CaseChecksum = CurrentCases.CaseChecksum AND EXISTS(SELECT 1 FROM [tdq].[alpha_Refreshes] WHERE RefreshID = CurrentCases.RefreshID AND MeasureID = '''+CAST(@MeasureID AS nvarchar(36))+''')
+		WHEN NOT MATCHED THEN INSERT (RefreshID,CaseChecksum,'+@InsertColumns+') VALUES ('+CAST(@RefreshID AS nvarchar)+',CaseChecksum,'+@SelectColumns+')
+		WHEN NOT MATCHED BY SOURCE AND EXISTS(SELECT 1 FROM [tdq].[alpha_Refreshes] WHERE RefreshID = CurrentCases.RefreshID AND MeasureID = '''+CAST(@MeasureID AS nvarchar(36))+''') THEN DELETE;
 	'
 	RETURN @SQL;
 END;
 GO
 IF OBJECT_ID('tempdb..##test') IS NOT NULL DROP TABLE ##test;
 SELECT TOP 1 * INTO ##test FROM WorldWideImporters.sales.Invoices;
-PRINT [tdq].[alpha_CasesMergeStatement]('##test',NEWID(),1337);
+PRINT [tdq].[alpha_RefreshMergeStatement]('##test',NEWID(),1337);
 --IF OBJECT_ID('tempdb..##test') IS NOT NULL DROP TABLE ##test;
