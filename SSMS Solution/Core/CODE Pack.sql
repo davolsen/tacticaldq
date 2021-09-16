@@ -61,7 +61,7 @@ CREATE OR ALTER PROCEDURE [tdq].[alpha_Pack] AS BEGIN
 			COMMIT;
 
 			PRINT 'Generate bootstrap script'+CHAR(13)+CHAR(10)+CHAR(13)+CHAR(10)+REPLICATE('-',100)+CHAR(13)+CHAR(10)+CHAR(13)+CHAR(10);
-			EXEC [tdq].[alpha_BootstrapScript];
+			EXEC [tdq].[alpha_GenerateBootstrapScript];
 			PRINT CHAR(13)+CHAR(10)+CHAR(13)+CHAR(10)+REPLICATE('-',100) ;
 		END TRY
 		BEGIN CATCH

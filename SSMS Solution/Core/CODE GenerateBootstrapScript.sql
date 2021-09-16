@@ -1,4 +1,4 @@
-CREATE OR ALTER PROCEDURE [tdq].[alpha_BootstrapScript] AS BEGIN
+CREATE OR ALTER PROCEDURE [tdq].[alpha_GenerateBootstrapScript] AS BEGIN
 --TacticalDQ by DJ Olsen https://github.com/davolsen/tacticaldq
 /*<object><sequence>101</sequence></object>*/
 	SET NOCOUNT ON;
@@ -17,10 +17,10 @@ CREATE OR ALTER PROCEDURE [tdq].[alpha_BootstrapScript] AS BEGIN
 	PRINT 'IF OBJECT_ID(''tempdb..#BoxTable'') IS NOT NULL DROP TABLE #BoxTable'
 	PRINT 'SELECT ObjectName,ObjectType,ObjectSequence,CAST('''' AS xml).value(''xs:base64Binary(sql:column("DefinitionBinary"))'',''varbinary(max)'')DefinitionBinary,DefinitionText,DefinitionDecimal,DefinitionDate,DefinitionBit INTO #BoxTable FROM (VALUES';
 	DECLARE
-		@RowCount		int				=0
+		@RowCount		int=0
 		,@ObjectName	nvarchar(128)
 		,@Output		nvarchar(4000);
-	DECLARE BoxRows		CURSOR FAST_FORWARD FOR SELECT ObjectName FROM [tdq].[alpha_Box] ORDER BY CASE ObjectType WHEN 'CONF' THEN 1 WHEN 'TABL' THEN 2 WHEN 'CODE' THEN 3 WHEN 'MSR' THEN 4 ELSE 9 END, ObjectName;
+	DECLARE BoxRows		CURSOR FAST_FORWARD FOR SELECT ObjectName FROM [tdq].[alpha_Box] ORDER BY ObjectSequence, ObjectName;
 	OPEN BoxRows;
 	FETCH NEXT FROM BoxRows INTO @ObjectName;
 	WHILE @@FETCH_STATUS = 0 BEGIN
@@ -64,4 +64,4 @@ CREATE OR ALTER PROCEDURE [tdq].[alpha_BootstrapScript] AS BEGIN
 	PRINT 'IF OBJECT_ID(''tempdb..#BoxTable'') IS NOT NULL DROP TABLE #BoxTable;';
 END;
 GO
-EXEC [tdq].[alpha_BootstrapScript];
+EXEC [tdq].[alpha_GenerateBootstrapScript];

@@ -25,12 +25,6 @@
           <AssociatedConnUserName />
           <FullPath>CODE AgentConfig.sql</FullPath>
         </FileNode>
-        <FileNode Name="CODE BootstrapScript.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:JONQUIL\SQLEXPRESS:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>JONQUIL\SQLEXPRESS</AssociatedConnSrvName>
-          <AssociatedConnUserName />
-          <FullPath>CODE BootstrapScript.sql</FullPath>
-        </FileNode>
         <FileNode Name="CODE BoxBit.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:JONQUIL\SQLEXPRESS:True</AssociatedConnectionMoniker>
           <AssociatedConnSrvName>JONQUIL\SQLEXPRESS</AssociatedConnSrvName>
@@ -60,6 +54,12 @@
           <AssociatedConnSrvName>JONQUIL\SQLEXPRESS</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>CODE CasesSummary.sql</FullPath>
+        </FileNode>
+        <FileNode Name="CODE GenerateBootstrapScript.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:JONQUIL\SQLEXPRESS:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>JONQUIL\SQLEXPRESS</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>CODE GenerateBootstrapScript.sql</FullPath>
         </FileNode>
         <FileNode Name="CODE MailConfig.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:JONQUIL\SQLEXPRESS:True</AssociatedConnectionMoniker>
