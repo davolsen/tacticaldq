@@ -1,28 +1,26 @@
 CREATE OR ALTER PROCEDURE [tdq].[alpha_Pack] AS BEGIN
 --TacticalDQ by DJ Olsen https://github.com/davolsen/tacticaldq
-/*<object><sequence>102</sequence></object>*/
+/*<Object><Sequence>102</Sequence></Object>*/
 	SET NOCOUNT ON;
 	BEGIN TRAN
 		BEGIN TRY
 			PRINT 'Get object definitions';
 			WITH Definitions AS (
 				SELECT
-					ObjectName		=SUBSTRING(OBJECT_NAME(sql_modules.object_id),LEN([tdq].[alpha_BoxText]('HomePrefix')) + 1,128)
+					ObjectName		=SUBSTRING(OBJECT_NAME(object_id),LEN([tdq].[alpha_BoxText]('HomePrefix')) + 1,128)
 					,DefinitionText	=REPLACE(REPLACE(definition,'['+[tdq].[alpha_BoxText]('HomeSchema')+']','[$schema$]'),'['+[tdq].[alpha_BoxText]('HomePrefix'),'[$prefix$')
-					,ObjectType		=IIF(OBJECT_NAME(sql_modules.object_id) LIKE [tdq].[alpha_BoxText]('HomePrefix')
+					,ObjectType		=IIF(OBJECT_NAME(object_id) LIKE [tdq].[alpha_BoxText]('HomePrefix')
 						+'%'
 						+[tdq].[alpha_BoxText]('MeasureViewPattern'),'MESR','CODE')
-				FROM
-					sys.sql_modules
-					JOIN sys.all_objects ON all_objects.object_id = sql_modules.object_id
+				FROM sys.sql_modules
 				WHERE
-					SCHEMA_NAME(all_objects.schema_id) = [tdq].[alpha_BoxText]('HomeSchema')
-					AND OBJECT_NAME(sql_modules.object_id) LIKE [tdq].[alpha_BoxText]('HomePrefix')+'%'
+					OBJECT_SCHEMA_NAME(object_id) = [tdq].[alpha_BoxText]('HomeSchema')
+					AND OBJECT_NAME(object_id) LIKE [tdq].[alpha_BoxText]('HomePrefix')+'%'
 			)
 			SELECT
 				*
-				,MetaStart		=CHARINDEX('<object>',DefinitionText,1)
-				,MetaEnd		=CHARINDEX('</object>',DefinitionText,1) + 10
+				,MetaStart		=CHARINDEX('<Object>',DefinitionText,1)
+				,MetaEnd		=CHARINDEX('</Object>',DefinitionText,1) + 10
 			INTO #Definitions
 			FROM Definitions;
 
@@ -37,7 +35,7 @@ CREATE OR ALTER PROCEDURE [tdq].[alpha_Pack] AS BEGIN
 			SELECT
 				ObjectName
 				,ObjectType
-				,ISNULL(NULLIF(TRY_CAST(XMLData.query('/object/sequence/text()') AS nvarchar(10)),''), 200) ObjectSequence
+				,ISNULL(TRY_CAST(XMLData.value('(/Object/Sequence/text())[1]','varchar(3)') AS tinyint), 200) ObjectSequence
 				,DefinitionBinary
 			FROM (
 				SELECT

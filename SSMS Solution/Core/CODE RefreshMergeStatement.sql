@@ -1,6 +1,6 @@
 CREATE OR ALTER FUNCTION [tdq].[alpha_RefreshMergeStatement]
 --TacticalDQ by DJ Olsen https://github.com/davolsen/tacticaldq
-/*<object><sequence>10</sequence></object>*/
+/*<Object><Sequence>10</Sequence></Object>*/
 (
 	@TempCaseTableName		nvarchar(4000)
 	,@MeasureID				uniqueidentifier

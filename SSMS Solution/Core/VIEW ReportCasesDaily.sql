@@ -1,6 +1,6 @@
 CREATE OR ALTER VIEW [tdq].[alpha_ReportCasesDaily] AS
 --TacticalDQ by DJ Olsen https://github.com/davolsen/tacticaldq
-/*<object><sequence>50</sequence></object>*/
+/*<Object><Sequence>50</Sequence></Object>*/
 WITH
 	CalendarRange AS (
 		SELECT
@@ -35,7 +35,7 @@ SELECT
 FROM
 	[tdq].[alpha_Measures]
 	CROSS JOIN Calendar
-	CROSS APPLY [tdq].[alpha_CasesSummary](MeasureID, DATEADD(SECOND,-1,ReportDateOpening) AT TIME ZONE 'UTC', DATEADD(SECOND,1,ReportDateClosing) AT TIME ZONE 'UTC') CaseSummary
+	CROSS APPLY [tdq].[alpha_CasesSummary](MeasureID, DATEADD(SECOND,-1,ReportDateOpening) AT TIME ZONE 'UTC', DATEADD(SECOND,1,ReportDateClosing) AT TIME ZONE 'UTC') CaseSummary;
 GO
 
 --SET DATEFIRST 1

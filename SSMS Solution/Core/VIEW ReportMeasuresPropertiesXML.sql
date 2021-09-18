@@ -1,6 +1,6 @@
-CREATE OR ALTER VIEW [tdq].[alpha_ReportMeasurePropertiesXML] AS
+CREATE OR ALTER VIEW [tdq].[alpha_ReportMeasuresPropertiesXML] AS
 --TacticalDQ by DJ Olsen https://github.com/davolsen/tacticaldq
-/*<object><sequence>60</sequence></object>*/
+/*<Object><Sequence>60</Sequence></Object>*/
 WITH
 	MeasureProperties AS (
 		SELECT
@@ -9,7 +9,7 @@ WITH
 			,PropertyTag		=2
 			,[Property!2!name]	=PropertyName
 			,[Property!2!value]	=PropertyValue
-		FROM [tdq].[alpha_ReportMeasureProperties]
+		FROM [tdq].[alpha_ReportMeasuresProperties]
 	)
 	,ExplicitLayout AS (
 		SELECT DISTINCT
@@ -35,5 +35,5 @@ SELECT ReportXML = (
 GO
 
 --SET DATEFIRST 1
-SELECT * FROM [tdq].[alpha_ReportMeasurePropertiesXML];
+SELECT * FROM [tdq].[alpha_ReportMeasuresPropertiesXML];
 --WHERE MeasureID = 'CE85AD9E-6560-4CBF-A6FF-32A391FAE2B7'

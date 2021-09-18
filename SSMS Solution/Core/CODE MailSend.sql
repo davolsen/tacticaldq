@@ -1,6 +1,6 @@
 CREATE OR ALTER PROC [tdq].[alpha_MailSend](
 --TacticalDQ by DJ Olsen https://github.com/davolsen/tacticaldq
-/*<object><sequence>10</sequence></object>*/
+/*<Object><Sequence>10</Sequence></Object>*/
 	@Receipients	varchar(8000)
 	,@Subject		nvarchar(255)
 	,@Body			nvarchar(4000)	=NULL

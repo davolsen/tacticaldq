@@ -1,90 +1,82 @@
 CREATE OR ALTER VIEW [tdq].[alpha_Measures] AS
 --TacticalDQ by DJ Olsen https://github.com/davolsen/tacticaldq
-/*<object><sequence>30</sequence></object>*/
+/*<Object><Sequence>30</Sequence></Object>*/
 WITH
 	Definitions AS (
 		SELECT
 			definition
-			,ObjectName	='['+SCHEMA_NAME(all_objects.schema_id)+']'
-						+'.['+OBJECT_NAME(sql_modules.object_id)+']'	
-			,MetaStart	=CHARINDEX('<measure>',definition,1)					
-			,MetaEnd	=CHARINDEX('</measure>',definition,1) + 10
-		FROM
-			sys.sql_modules
-			JOIN sys.all_objects ON all_objects.object_id = sql_modules.object_id
+			,ObjectName	=CAST(N'['+OBJECT_SCHEMA_NAME(object_id)+N'].['+OBJECT_NAME(object_id)+N']'	AS nvarchar(522))
+			,MetaStart	=CHARINDEX('<Measure>',definition,1)					
+			,MetaEnd	=CHARINDEX('</Measure>',definition,1) + 10
+		FROM sys.sql_modules
 		WHERE
-			OBJECT_NAME(sql_modules.object_id)		LIKE	[tdq].[alpha_BoxText]('HomePrefix') + [tdq].[alpha_BoxText]('MeasureViewPattern')
-			AND SCHEMA_NAME(all_objects.schema_id)	=		[tdq].[alpha_BoxText]('HomeSchema')
+			OBJECT_NAME(object_id)				LIKE [tdq].[alpha_BoxText]('HomePrefix') + [tdq].[alpha_BoxText]('MeasureViewPattern')
+			AND OBJECT_SCHEMA_NAME(object_id)	=[tdq].[alpha_BoxText]('HomeSchema')
 	)
 	,MetaData AS (
-		SELECT
-			ObjectName
-			,MeasureCode		=NULLIF(XMLData.value('(/measure/code/text())[1]','nvarchar(100)'),'')
-			,MeasureID			=TRY_CAST(XMLData.value('(/measure/id/text())[1]','nchar(36)') AS uniqueidentifier)
-			,MeasureDescription	=NULLIF(XMLData.value('(/measure/description/text())[1]','nvarchar(500)'),'')
-			,RefreshPolicy		=ISNULL(NULLIF(XMLData.value('(/measure/refreshPolicy/text())[1]','nvarchar(20)'),''),[tdq].[alpha_BoxText]('RefreshPolicyDefault'))
-			,RefreshTimeOffset	=ISNULL(TRY_CAST(XMLData.value('(/measure/refreshTimeOffset/text())[1]','nchar(5)') AS time(0)),[tdq].[alpha_BoxDate]('RefreshTimeOffsetDefault'))
-			,MeasureOwner		=NULLIF(TRY_CAST(XMLData.query('/measure/owner/text()') AS nvarchar(254)),'')
-			,MeasureCategory	=NULLIF(TRY_CAST(XMLData.query('/measure/category/text()') AS nvarchar(254)),'')
-			,ReportFields		=XMLData.query('/measure/reportFields')
-		FROM (
-			SELECT
-				ObjectName
-				,XMLData		=TRY_CAST(SUBSTRING(definition,MetaStart,MetaEnd - MetaStart) AS xml)
-			FROM Definitions
-			WHERE
-				MetaStart	>0
-				AND MetaEnd	>0
-		) MetaData
+		SELECT *, RefreshTimeOffset=ISNULL(MetadataRefreshTimeOffset,[tdq].[alpha_BoxDate]('RefreshTimeOffsetDefault'))
+		FROM (SELECT
+				*
+				,MetadataMeasureID			=TRY_CAST(RawMeasureID AS uniqueidentifier)
+				,MetadataRefreshTimeOffset	=TRY_CAST(RawRefreshTimeOffset AS time(0))
+			FROM (SELECT
+					*
+					,MeasureCode			=XMLData.value('(/Measure/Code/text())[1]','nvarchar(100)')
+					,MeasureDefinition		=XMLData.value('(/Measure/Definition/text())[1]','nvarchar(500)')
+					,RefreshPolicy			=ISNULL(XMLData.value('(/Measure/RefreshPolicy/text())[1]','nvarchar(20)'),[tdq].[alpha_BoxText]('RefreshPolicyDefault'))
+					,RawRefreshTimeOffset	=XMLData.value('(/Measure/RefreshTimeOffset/text())[1]','nchar(5)') 
+					,MeasureOwner			=XMLData.value('(/Measure/Owner/text())[1]','nvarchar(100)')
+					,MeasureCategory		=XMLData.value('(/Measure/Category/text())[1]','nvarchar(100)')
+					,ReportFields			=XMLData.query('/Measure/ReportFields')
+					,RawMeasureID			=XMLData.value('(/Measure/ID/text())[1]','nchar(36)')
+				FROM (SELECT
+						ObjectName
+						,XMLData =IIF(MetaEnd>MetaStart,TRY_CAST(SUBSTRING(definition,MetaStart,MetaEnd - MetaStart) AS xml),NULL)
+					FROM Definitions
+		)T)T)T
 	)
 	,Measures AS (
 		SELECT
-			*
-			,MeasureIDCount		=COUNT(*) OVER (PARTITION BY MeasureID)
+			MeasureID			=IIF(ROW_NUMBER() OVER (PARTITION BY MetadataMeasureID ORDER BY MeasureCode) = 1,MetadataMeasureID,NULL)
+			,*
+			,MeasureIDCount		=IIF(MetadataMeasureID IS NOT NULL,COUNT(*) OVER (PARTITION BY MetadataMeasureID),0)
+			,MeasureCodeCount	=IIF(MeasureCode IS NOT NULL,COUNT(*) OVER (PARTITION BY MeasureCode),0)
 			,RefreshTimeMinutes	=DATEDIFF(MINUTE,'00:00',RefreshTimeOffset)
 			,RefreshWeekDay		=(((CASE LEFT(RefreshPolicy,2) WHEN 'Mo' THEN 1 WHEN 'Tu' THEN 2 WHEN 'We' THEN 3 WHEN 'Th' THEN 4 WHEN 'Fr' THEN 5 WHEN 'Sa' THEN 6 WHEN 'Su' THEN 7 END-@@DATEFIRST)+7)%7)+1
-			,Today				=DATEPART(WEEKDAY,SYSDATETIME())
 		FROM MetaData
 	)
-	,Refresh AS (
-		SELECT
-			MeasureID
-			,MaxTimestampStarted	=MAX(TimestampStarted)
-			,LastStartedDay			=[tdq].[alpha_RoundDate](MAX(TimestampStarted),'DAY')		
-			,LastStartedHour		=[tdq].[alpha_RoundDate](MAX(TimestampStarted),'HOUR')
-		FROM [tdq].[alpha_Refreshes]
-		GROUP BY MeasureID
+	,CleanMeasures AS (SELECT * FROM Measures WHERE  XMLData IS NOT NULL)
+	,Errors AS (
+		SELECT ObjectName, STRING_AGG(Error, ', ') AS Errors
+		FROM (
+			SELECT ObjectName, Error='Invalid or Missing Metadata' FROM Measures WHERE XMLData IS NULL
+			UNION ALL SELECT ObjectName, Error='Duplicate ID' FROM CleanMeasures WHERE MeasureIDCount > 1
+			UNION ALL SELECT ObjectName, Error='Duplicate Code' FROM CleanMeasures WHERE MeasureCodeCount > 1
+			UNION ALL SELECT ObjectName, 'Missing ID' FROM CleanMeasures WHERE MetadataMeasureID IS NULL
+			UNION ALL SELECT ObjectName, 'Missing Code' FROM CleanMeasures WHERE MeasureCode IS NULL
+			UNION ALL SELECT ObjectName, 'Invalid RefreshTimeOffset' FROM CleanMeasures WHERE RawRefreshTimeOffset IS NOT NULL AND MetadataRefreshTimeOffset IS NULL
+			UNION ALL SELECT ObjectName, 'Invalid RefreshPolicy' FROM Measures WHERE RefreshPolicy NOT IN ('Continuous','Hourly','Daily') AND RefreshWeekDay = 0
+		)T
+		GROUP BY ObjectName
 	)
 SELECT
-	MeasureID						=IIF(MeasureIDCount = 1, Measures.MeasureID, NULL)
+	Measures.ObjectName
+	,MeasureID
+	,Valid	=IIF(Errors IS NULL,1,0)
 	,MeasureCode
-	,ObjectName
-	,MeasureDescription
+	,MeasureDefinition
 	,MeasureOwner
-	,RefreshLastTimestampStarted	=MaxTimestampStarted AT TIME ZONE [tdq].[alpha_BoxText]('WorkingTimezoneName')
+	,MeasureCategory
 	,RefreshPolicy
 	,RefreshTimeOffset
-	,RefreshNext					=CASE
-										WHEN MaxTimestampStarted IS NULL THEN DATEADD(SECOND,-1,SYSDATETIMEOFFSET())
-										ELSE
-											DATEADD(MINUTE,RefreshTimeMinutes,CASE LEFT(RefreshPolicy,1)
-												WHEN 'C'	THEN MaxTimestampStarted
-												WHEN 'H'		THEN DATEADD(HOUR,1,LastStartedHour)--TODO: NOPE
-												WHEN 'D'		THEN DATEADD(DAY,1,LastStartedDay)
-												ELSE DATEADD(DAY,IIF(Today > RefreshWeekDay,7,0) + (RefreshWeekDay - Today),LastStartedDay)
-													END) END
-	,Valid							=CASE
-										WHEN MeasureIDCount		>1 THEN 0
-										WHEN Measures.MeasureID	IS NULL THEN 0
-										WHEN MeasureCode		IS NULL THEN 0
-										WHEN RefreshPolicy		NOT IN ('Continuous','Hourly','Daily') AND RefreshWeekDay = 0 THEN 0
-										WHEN RefreshTimeOffset	IS NULL THEN 0
-											ELSE 1 END
-	,MeasureCategory
-	,ReportFields					=IIF(DATALENGTH(ReportFields) > 5, ReportFields,NULL)
-FROM
-	Measures
-	LEFT JOIN Refresh ON Refresh.MeasureID = Measures.MeasureID;
+	,RefreshTimeMinutes
+	,RefreshWeekDay
+	,ReportFields
+	--,XMLData
+	,Errors.Errors
+	FROM
+		Measures
+		LEFT JOIN Errors ON Errors.ObjectName = Measures.ObjectName;
 GO
 
 SELECT * FROM [tdq].[alpha_Measures];

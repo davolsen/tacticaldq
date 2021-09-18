@@ -1,6 +1,6 @@
 CREATE OR ALTER VIEW [tdq].[alpha_PackTableDefinitions] AS
 --TacticalDQ by DJ Olsen https://github.com/davolsen/tacticaldq
-/*<object><sequence>100</sequence></object>*/
+/*<Object><Sequence>100</Sequence></Object>*/
 SELECT
 	TableName			=tables.name
 	,TableDefinition	='CREATE TABLE ['+SCHEMA_NAME(tables.schema_id)+'].['+tables.name+']('

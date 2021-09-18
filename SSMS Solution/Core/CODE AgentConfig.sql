@@ -1,9 +1,7 @@
 CREATE OR ALTER PROC [tdq].[alpha_AgentConfig](
 --TacticalDQ by DJ Olsen https://github.com/davolsen/tacticaldq
-/*<object><sequence>40</sequence><autoExecute>true</autoExecute></object>*/
-	@CheckOnly			bit = 0--1=Don't make changes, only check.
-	,@Enabled			bit	= 1--1=The job should be enabled
-	,@StartImmediately	bit = 0--1=Start the job immediately after setup
+/*<Object><Sequence>40</Sequence><AutoExecute>true</AutoExecute></Object>*/
+	@CheckOnly			bit = 0--1=Don't make changes, only check
 ) AS BEGIN
 	SET NOCOUNT ON;
 	DECLARE @ReturnValue int = 0;--bitwise: 0=All good;1=service broker disabled;2=Service missing;4=Queue missing;8=Agent job missing
@@ -34,7 +32,9 @@ CREATE OR ALTER PROC [tdq].[alpha_AgentConfig](
 					,@name	=	@AgentCategoryName;
 
 				PRINT 'Add job';
-				DECLARE @jobId binary(16);
+				DECLARE
+					@jobId binary(16)
+					,@Enabled bit = [tdq].[alpha_BoxBit]('AgentEnabled');
 				EXEC msdb.dbo.sp_add_job
 					@job_name				=@job_name
 					,@description			=N'Checks which measures need to be refreshed and queues a refresh task.'
@@ -68,8 +68,8 @@ CREATE OR ALTER PROC [tdq].[alpha_AgentConfig](
 
 				PRINT 'Target server';
 				EXEC msdb.dbo.sp_add_jobserver @job_id = @jobId, @server_name = N'(local)';
-
-				IF (@StartImmediately = 1 AND @Enabled = 1) BEGIN
+				
+				IF (@Enabled = 1) BEGIN
 					PRINT 'Start job immediately';
 					DECLARE @ReturnCode int
 					EXEC @ReturnCode = msdb.dbo.sp_start_job @job_id = @jobId;
@@ -90,5 +90,5 @@ END;
 GO
 --EXEC [tdq].[alpha_Config];
 DECLARE @ReturnCode int;
-EXEC @ReturnCode = [tdq].[alpha_AgentConfig] @StartImmediately = 1-- @CheckOnly = 1;
+EXEC @ReturnCode = [tdq].[alpha_AgentConfig]-- @CheckOnly = 1;
 PRINT @ReturnCode;

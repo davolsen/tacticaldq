@@ -1,6 +1,6 @@
 CREATE OR ALTER PROC [tdq].[alpha_RefreshFromQueue] AS BEGIN
 --TacticalDQ by DJ Olsen https://github.com/davolsen/tacticaldq
-/*<object><sequence>32</sequence></object>*/
+/*<Object><Sequence>32</Sequence></Object>*/
 	DECLARE
 		@SQL				nvarchar(4000)--holds dynamic SQL
 		,@TempCaseTableName	nvarchar(128)	='##tdq_' + REPLACE(NEWID(),'-','_');
@@ -20,8 +20,8 @@ CREATE OR ALTER PROC [tdq].[alpha_RefreshFromQueue] AS BEGIN
 		IF @MessageTypeName = 'DEFAULT' BEGIN--DFAULT is a job. Other message types are usually conversation statuses
 			PRINT 'Get measure details';
 			DECLARE
-				@MeasureCode	nvarchar(50)		=@Message.value('(/refresn/code/text())[1]', 'nvarchar(128)')
-				,@MeasureID		uniqueidentifier	=@Message.value('(/refresh/id/text())[1]', 'nvarchar(128)')
+				@MeasureCode	nvarchar(50)		=@Message.value('(/Refresh/Code/text())[1]', 'nvarchar(100)')
+				,@MeasureID		uniqueidentifier	=@Message.value('(/Refresh/ID/text())[1]', 'nchar(36)')
 			PRINT 'Log job and start a refresh';
 			INSERT [tdq].[alpha_Log](LogSource, MeasureID, Code, LogMessage)
 			VALUES (OBJECT_NAME(@@PROCID), @MeasureID, @MeasureCode, 'Measure refresh started');
@@ -30,7 +30,7 @@ CREATE OR ALTER PROC [tdq].[alpha_RefreshFromQueue] AS BEGIN
 		ELSE IF @ResultCount = 0 BEGIN--no job
 			PRINT 'No measure refresh tasks in queue';
 			INSERT INTO [tdq].[alpha_Log](LogSource, LogMessage)
-			VALUES (OBJECT_NAME(@@PROCID), 'No measures to refresh waiting in queue');
+			VALUES (OBJECT_NAME(@@PROCID), 'No refresh tasks waiting in queue');
 		END;
 	END TRY
 	BEGIN CATCH--log error

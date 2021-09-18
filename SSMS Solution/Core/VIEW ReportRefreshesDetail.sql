@@ -1,6 +1,6 @@
 CREATE OR ALTER VIEW [tdq].[alpha_ReportRefreshesDetail] AS
 --TacticalDQ by DJ Olsen https://github.com/davolsen/tacticaldq
-/*<object><sequence>50</sequence></object>*/
+/*<Object><Sequence>50</Sequence></Object>*/
 SELECT
 	Refresh.RefreshID
 	,Refresh.MeasureID
@@ -17,10 +17,10 @@ SELECT
 	,CasesNetChange		=CasesClosing-CasesOpening
 FROM
 	[tdq].[alpha_Refreshes]	Refresh 
-	JOIN		[tdq].[alpha_Measures]	Measures ON Measures.MeasureID = Refresh.MeasureID
+	LEFT JOIN	[tdq].[alpha_Measures] Measures ON Measures.MeasureID = Refresh.MeasureID
 	CROSS APPLY [tdq].[alpha_CasesSummary](Measures.MeasureID, DATEADD(SECOND,-1,TimestampStarted) AT TIME ZONE 'UTC', DATEADD(SECOND,1,TimestampCompleted) AT TIME ZONE 'UTC') CaseSummary
 
-WHERE DATEDIFF(DAY,TimestampStarted,SYSDATETIMEOFFSET()) <= [tdq].[alpha_BoxDec]('ReportHistoryDays')
+WHERE DATEDIFF(DAY,TimestampStarted,SYSDATETIMEOFFSET()) <= [tdq].[alpha_BoxDec]('ReportHistoryDays');
 GO
 
 --SET DATEFIRST 1

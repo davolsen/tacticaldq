@@ -1,10 +1,10 @@
 CREATE OR ALTER VIEW [tdq].[alpha_measure_CUST-MAST-PAYD] AS
-/*<measure>
-	<code>CUST-MAST-PAYD</code>
-	<id>A9B9DA72-BDC2-4D65-93AC-8B0D59273977</id>
-	<description>Customers with zero payment days.</description>
-	<details>All customers should have greater than zero payment days</details>
-</measure>*/
+/*<Measure>
+	<Code>CUST-MAST-PAYD</Code>
+	<ID>A9B9DA72-BDC2-4D65-93AC-8B0D59273977</ID>
+	<Definition>Customers with zero payment days.</Definition>
+	<Details>All customers should have greater than zero payment days</Details>
+</Measure>*/
 SELECT
 	[CustomerID]
       ,[CustomerName]

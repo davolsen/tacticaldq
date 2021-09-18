@@ -1,17 +1,17 @@
 CREATE OR ALTER VIEW [tdq].[alpha_measure_CUST-TRAN-ORDQ] AS
-/*<measure>
-	<code>CUST-TRAN-ORDQ</code>
-	<id>A3B06A15-8480-4787-99B8-5AB530F8900C</id>
-	<description>Order quantity doesn't match invoiced quantity.</description>
-	<details>The quantity for each order line must match the invoiced quanity for the related invoice line.</details>
-	<refreshPolicy>Daily</refreshPolicy>
-	<owner>dj@olsen.gen.nz</owner>
-	<category>CUST</category>
-	<reportFields>
+/*<Measure>
+	<Code>CUST-TRAN-ORDQ</Code>
+	<ID>A3B06A15-8480-4787-99B8-5AB530F8900C</ID>
+	<Definition>Order quantity doesn't match invoiced quantity.</Definition>
+	<Details>The quantity for each order line must match the invoiced quanity for the related invoice line.</Details>
+	<RefreshPolicy>Daily</RefreshPolicy>
+	<Owner>dj@olsen.gen.nz</Owner>
+	<Category>CUST</Category>
+	<ReportFields>
 		<businessOwner name="Business Owner">Jane Doe</businessOwner>
 		<businessUnit name="Business Unit">Sales</businessUnit>
-	</reportFields>
-</measure>*/
+	</ReportFields>
+</Measure>*/
 SELECT
 	Invoices.InvoiceID
 	,InvoiceLineID

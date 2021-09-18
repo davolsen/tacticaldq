@@ -1,19 +1,17 @@
 CREATE OR ALTER PROCEDURE [tdq].[alpha_GenerateBootstrapScript] AS BEGIN
 --TacticalDQ by DJ Olsen https://github.com/davolsen/tacticaldq
-/*<object><sequence>101</sequence></object>*/
+/*<Object><Sequence>101</Sequence></Object>*/
 	SET NOCOUNT ON;
 	PRINT '/*';
 	PRINT REPLACE([tdq].[alpha_BoxText]('License'),'\n',CHAR(13)+CHAR(10));
 	PRINT '*/';
 	PRINT '--Execute on Microsoft SQL Server 2016 or later, with sysadmin priviledges';
 	PRINT 'DECLARE';
-	PRINT '	@SchemaName nvarchar(128) = ''tdq'' -- All objects will be created in this schema';
-	PRINT '	,@Prefix nvarchar(128) = ''''; -- All objects will be prefixed with this in their name'+REPLICATE(CHAR(13)+CHAR(10),2)
+	PRINT '	@SchemaName nvarchar(128) = ''tdq''--All objects will be created in this schema';
+	PRINT '	,@Prefix nvarchar(128) = ''''--All objects will be prefixed with this in their name'
+	PRINT '	,@Enabled bit = 1;--Enable and start TDQ immediately'+REPLICATE(CHAR(13)+CHAR(10),2)
 	PRINT 'SET NOCOUNT ON;';
-	PRINT 'DECLARE @SQL AS nvarchar(4000) = ''SELECT OBJECT_ID(''''['' + @SchemaName + ''].['' + @Prefix + ''Box]'''')'';';
-	PRINT 'DECLARE @ObjectIDTable TABLE(ObjectID int);';
-	PRINT 'INSERT @ObjectIDTable EXEC (@SQL);';
-	PRINT 'IF (SELECT TOP 1 ObjectID FROM @ObjectIDTable) IS NOT NULL THROW 50000, ''Box table already exists. Did you already run bootstrap? You can execute the unpack procedure, or drop the Box table, or change schema or prefix'', 1';
+	PRINT 'IF OBJECT_ID(''['' + @SchemaName + ''].['' + @Prefix + ''Box]'') IS NOT NULL THROW 50000, ''Box table already exists. Did you already run bootstrap? You can execute the unpack procedure, or drop the Box table, or change schema or prefix'', 1';
 	PRINT 'IF OBJECT_ID(''tempdb..#BoxTable'') IS NOT NULL DROP TABLE #BoxTable'
 	PRINT 'SELECT ObjectName,ObjectType,ObjectSequence,CAST('''' AS xml).value(''xs:base64Binary(sql:column("DefinitionBinary"))'',''varbinary(max)'')DefinitionBinary,DefinitionText,DefinitionDecimal,DefinitionDate,DefinitionBit INTO #BoxTable FROM (VALUES';
 	DECLARE
@@ -27,7 +25,7 @@ CREATE OR ALTER PROCEDURE [tdq].[alpha_GenerateBootstrapScript] AS BEGIN
 		SET @RowCount	=@RowCount+1
 		SET @Output		=(
 			SELECT TOP 1
-				IIF(@RowCount > 1,',','')
+				CHAR(9) + IIF(@RowCount > 1,',','')
 				+'(N'''+ObjectName+''''
 				+','''+ObjectType+''''
 				+','+CAST(ObjectSequence AS varchar(3))
@@ -52,7 +50,8 @@ CREATE OR ALTER PROCEDURE [tdq].[alpha_GenerateBootstrapScript] AS BEGIN
 	CLOSE		BoxRows;
 	DEALLOCATE	BoxRows;
 	PRINT ')Box(ObjectName,ObjectType,ObjectSequence,DefinitionBinary,DefinitionText,DefinitionDecimal,DefinitionDate,DefinitionBit)';
-	PRINT 'SET @SQL =REPLACE(REPLACE((SELECT CAST(DECOMPRESS(DefinitionBinary) AS nvarchar(4000)) FROM #BoxTable WHERE ObjectName = ''Box''),''[$schema$]'',''[''+@SchemaName+'']''),''[$prefix$'',''[''+@Prefix);';
+	PRINT 'UPDATE #BoxTable SET AgentEnabled = @Enabled';
+	PRINT 'DECLARE @SQL nvarchar(4000)=REPLACE(REPLACE((SELECT CAST(DECOMPRESS(DefinitionBinary) AS nvarchar(4000)) FROM #BoxTable WHERE ObjectName = ''Box''),''[$schema$]'',''[''+@SchemaName+'']''),''[$prefix$'',''[''+@Prefix);';
 	PRINT 'EXEC (@SQL);';
 	PRINT 'SET @SQL =''INSERT [''+@SchemaName+''].[''+@Prefix+''Box] SELECT ObjectName,ObjectType,ObjectSequence,DefinitionBinary,DefinitionText,DefinitionDecimal,DefinitionDate,DefinitionBit FROM #BoxTable'';';
 	PRINT 'EXEC (@SQL);';

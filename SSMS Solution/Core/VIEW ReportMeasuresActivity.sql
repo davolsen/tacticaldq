@@ -1,6 +1,6 @@
-CREATE OR ALTER VIEW [tdq].[alpha_ReportMeasures] AS
+CREATE OR ALTER VIEW [tdq].[alpha_ReportMeasuresActivity] AS
 --TacticalDQ by DJ Olsen https://github.com/davolsen/tacticaldq
-/*<object><sequence>50</sequence></object>*/
+/*<Object><Sequence>50</Sequence></Object>*/
 WITH
 	Errors AS (
 		SELECT
@@ -12,7 +12,7 @@ WITH
 SELECT
 	MeasureID
 	,MeasureCode
-	,MeasureDescription
+	,MeasureDefinition
 	,RefreshLastTimestampStarted
 	,CasesToday				=CasesClosing
 	,CasesTodayResolved		=CasesOpening-CasesCarried
@@ -33,12 +33,10 @@ SELECT
 									AND LogTimestamp	>RefreshLastTimestampStarted
 										),1,0)
 FROM
-	[tdq].[alpha_Measures] Measures
+	[tdq].[alpha_MeasuresActivity] Measures
 	CROSS APPLY [tdq].[alpha_CasesSummary](MeasureID, DATEADD(SECOND,-1,[tdq].[alpha_RoundDate](SYSDATETIMEOFFSET(),'DAY')) AT TIME ZONE 'UTC', DATEADD(SECOND,1,SYSDATETIMEOFFSET()) AT TIME ZONE 'UTC') CaseSummary
-
-WHERE Valid = 1
 GO
 
 --SET DATEFIRST 1
-SELECT * FROM [tdq].[alpha_ReportMeasures]
+SELECT * FROM [tdq].[alpha_ReportMeasuresActivity]
 --WHERE MeasureID = 'CE85AD9E-6560-4CBF-A6FF-32A391FAE2B7'

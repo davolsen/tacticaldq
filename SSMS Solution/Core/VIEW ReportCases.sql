@@ -1,6 +1,6 @@
 CREATE OR ALTER VIEW [tdq].[alpha_ReportCases] AS
 --TacticalDQ by DJ Olsen https://github.com/davolsen/tacticaldq
-/*<object><sequence>50</sequence></object>*/
+/*<Object><Sequence>50</Sequence></Object>*/
 WITH
 	Refreshes AS (
 		SELECT *
@@ -46,9 +46,9 @@ SELECT
 	,CaseValuesExtended
 	,Identified
 FROM
-	[tdq].[alpha_Cases]				Cases
-	JOIN Refreshes								ON Refreshes.RefreshID	=Cases.RefreshID
-	JOIN [tdq].[alpha_Measures]		Measures		ON Measures.MeasureID			=Refreshes.MeasureID;
+	[tdq].[alpha_Cases]			Cases
+	JOIN						Refreshes	ON Refreshes.RefreshID	=Cases.RefreshID
+	JOIN [tdq].[alpha_Measures]	Measures	ON Measures.MeasureID			=Refreshes.MeasureID;
 GO
 
 --SET DATEFIRST 1

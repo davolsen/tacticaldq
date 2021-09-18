@@ -1,6 +1,6 @@
 CREATE OR ALTER PROC [tdq].[alpha_SchedulerConfig](
 --TacticalDQ by DJ Olsen https://github.com/davolsen/tacticaldq
-/*<object><sequence>40</sequence><autoExecute>true</autoExecute></object>*/
+/*<Object><Sequence>40</Sequence><AutoExecute>true</AutoExecute></Object>*/
 	@CheckOnly bit = 0--Don't make changes, only check.
 ) AS BEGIN
 	DECLARE	@ReturnValue int = 0;--bitwise: 0=All good;1=service broker disabled;2=Service missing;4=Queue missing;8=Agent job missing

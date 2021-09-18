@@ -1,6 +1,6 @@
 CREATE OR ALTER FUNCTION [tdq].[alpha_BoxDec]
 --TacticalDQ by DJ Olsen https://github.com/davolsen/tacticaldq
-/*<object><sequence>10</sequence></object>*/
+/*<Object><Sequence>10</Sequence></Object>*/
 (
 	@ObjectName nvarchar(128)
 )

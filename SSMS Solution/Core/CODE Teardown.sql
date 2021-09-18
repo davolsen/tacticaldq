@@ -1,10 +1,10 @@
 CREATE OR ALTER PROCEDURE [tdq].[alpha_Teardown](
 --TacticalDQ by DJ Olsen https://github.com/davolsen/tacticaldq
-/*<object><sequence>103</sequence></object>*/
+/*<Object><Sequence>103</Sequence></Object>*/
 	@PackFirst	bit	=1
 	,@Confirm	bit	=0
 ) AS BEGIN
-	/*<object><sequence>1</sequence></object>*/
+	/*<Object><Sequence>1</Sequence></Object>*/
 	IF @Confirm		=0 THROW 50000, 'The confirm parameter must be set to 1', 1
 	IF @PackFirst	=1 EXEC [tdq].[alpha_Pack]
 	

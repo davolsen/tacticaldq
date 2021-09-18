@@ -163,11 +163,11 @@
           <AssociatedConnUserName />
           <FullPath>VIEW Measures.sql</FullPath>
         </FileNode>
-        <FileNode Name="VIEW MeasuresValidation.sql">
+        <FileNode Name="VIEW MeasuresActivity.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:JONQUIL\SQLEXPRESS:True</AssociatedConnectionMoniker>
           <AssociatedConnSrvName>JONQUIL\SQLEXPRESS</AssociatedConnSrvName>
           <AssociatedConnUserName />
-          <FullPath>VIEW MeasuresValidation.sql</FullPath>
+          <FullPath>VIEW MeasuresActivity.sql</FullPath>
         </FileNode>
         <FileNode Name="VIEW PackTableDefinitions.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:JONQUIL\SQLEXPRESS:True</AssociatedConnectionMoniker>
@@ -217,29 +217,29 @@
           <AssociatedConnUserName />
           <FullPath>VIEW ReportLogXML.sql</FullPath>
         </FileNode>
-        <FileNode Name="VIEW ReportMeasureProperties.sql">
+        <FileNode Name="VIEW ReportMeasuresActivity.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:JONQUIL\SQLEXPRESS:True</AssociatedConnectionMoniker>
           <AssociatedConnSrvName>JONQUIL\SQLEXPRESS</AssociatedConnSrvName>
           <AssociatedConnUserName />
-          <FullPath>VIEW ReportMeasureProperties.sql</FullPath>
+          <FullPath>VIEW ReportMeasuresActivity.sql</FullPath>
         </FileNode>
-        <FileNode Name="View ReportMeasurePropertiesXML.sql">
+        <FileNode Name="VIEW ReportMeasuresActivityXML.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:JONQUIL\SQLEXPRESS:True</AssociatedConnectionMoniker>
           <AssociatedConnSrvName>JONQUIL\SQLEXPRESS</AssociatedConnSrvName>
           <AssociatedConnUserName />
-          <FullPath>View ReportMeasurePropertiesXML.sql</FullPath>
+          <FullPath>VIEW ReportMeasuresActivityXML.sql</FullPath>
         </FileNode>
-        <FileNode Name="VIEW ReportMeasures.sql">
+        <FileNode Name="VIEW ReportMeasuresProperties.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:JONQUIL\SQLEXPRESS:True</AssociatedConnectionMoniker>
           <AssociatedConnSrvName>JONQUIL\SQLEXPRESS</AssociatedConnSrvName>
           <AssociatedConnUserName />
-          <FullPath>VIEW ReportMeasures.sql</FullPath>
+          <FullPath>VIEW ReportMeasuresProperties.sql</FullPath>
         </FileNode>
-        <FileNode Name="VIEW ReportMeasuresXML.sql">
+        <FileNode Name="VIEW ReportMeasuresPropertiesXML.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:JONQUIL\SQLEXPRESS:True</AssociatedConnectionMoniker>
           <AssociatedConnSrvName>JONQUIL\SQLEXPRESS</AssociatedConnSrvName>
           <AssociatedConnUserName />
-          <FullPath>VIEW ReportMeasuresXML.sql</FullPath>
+          <FullPath>VIEW ReportMeasuresPropertiesXML.sql</FullPath>
         </FileNode>
         <FileNode Name="VIEW ReportRefreshesDetail.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:JONQUIL\SQLEXPRESS:True</AssociatedConnectionMoniker>

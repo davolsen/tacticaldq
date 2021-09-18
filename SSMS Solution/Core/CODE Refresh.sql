@@ -1,6 +1,6 @@
 CREATE OR ALTER PROC [tdq].[alpha_Refresh](
 --TacticalDQ by DJ Olsen https://github.com/davolsen/tacticaldq
-/*<object><sequence>31</sequence></object>*/
+/*<Object><Sequence>31</Sequence></Object>*/
 	@MeasureID		uniqueidentifier	= NULL--always overrides Code
 	,@MeasureCode	nvarchar(50)		= NULL
 ) AS BEGIN
@@ -21,7 +21,7 @@ CREATE OR ALTER PROC [tdq].[alpha_Refresh](
 			,@MeasureCode	=MeasureCode
 			,@ObjectName	=ObjectName
 			,@MeasureOwner	=MeasureOwner
-		FROM [tdq].[alpha_Measures]
+		FROM [tdq].[alpha_MeasuresActivity]
 		WHERE
 			MeasureID			= @MeasureID
 			OR (

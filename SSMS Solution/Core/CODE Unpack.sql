@@ -1,6 +1,6 @@
 CREATE OR ALTER PROCEDURE [tdq].[alpha_Unpack] AS BEGIN
 --TacticalDQ by DJ Olsen https://github.com/davolsen/tacticaldq
-	/*<object><sequence>0</sequence></object>*/
+	/*<Object><Sequence>0</Sequence></Object>*/
 	DECLARE
 		@Prefix					nvarchar(128)	= LEFT(OBJECT_NAME(@@PROCID),CHARINDEX('Unpack',OBJECT_NAME(@@PROCID)) - 1)	--the prefix of this proc
 		,@SchemaName			nvarchar(128)	= OBJECT_SCHEMA_NAME(@@PROCID)												--the schema for this proc
@@ -45,7 +45,7 @@ CREATE OR ALTER PROCEDURE [tdq].[alpha_Unpack] AS BEGIN
 				SET @SQL = REPLACE(REPLACE(@SQL, REPLACE(@SchemaToken,'/$','$'), '['+@SchemaName+']'), REPLACE(@PrefixToken,'/$','$'), '['+@Prefix); -- replace the schema and prefix
 
 				EXEC (@SQL); -- create the object
-				IF SUBSTRING(@SQL,CHARINDEX('<autoExecute>',@SQL)+13,4) = 'true' BEGIN--Auto Execute
+				IF SUBSTRING(@SQL,CHARINDEX('<AutoExecute>',@SQL)+13,4) = 'true' BEGIN--Auto Execute
 					SET @SQL = 'EXEC ['+@SchemaName+'].['+@Prefix+@ObjectName+']'
 					EXEC (@SQL);
 				END;

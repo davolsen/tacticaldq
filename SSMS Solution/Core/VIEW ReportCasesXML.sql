@@ -1,6 +1,6 @@
 CREATE OR ALTER VIEW [tdq].[alpha_ReportCasesXML] AS
 --TacticalDQ by DJ Olsen https://github.com/davolsen/tacticaldq
-/*<object><sequence>60</sequence></object>*/
+/*<Object><Sequence>60</Sequence></Object>*/
 SELECT
 	Measures.MeasureID
 	,ReportXML =(
@@ -30,7 +30,7 @@ SELECT
 		WHERE MeasureID = Measures.MeasureID
 		FOR XML PATH('Case'), ROOT('Cases'), TYPE
 	)
-FROM [tdq].[alpha_ReportMeasures] Measures;
+FROM [tdq].[alpha_ReportMeasuresActivity] Measures;
 GO
 
 --SET DATEFIRST 1

@@ -1,6 +1,6 @@
 CREATE OR ALTER VIEW [tdq].[alpha_ReportCasesDailyXML] AS
 --TacticalDQ by DJ Olsen https://github.com/davolsen/tacticaldq
-/*<object><sequence>60</sequence></object>*/
+/*<Object><Sequence>60</Sequence></Object>*/
 SELECT (
 	SELECT
 		[@MeasureID]			=MeasureID
