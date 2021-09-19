@@ -73,6 +73,12 @@
           <AssociatedConnUserName />
           <FullPath>CODE MailSend.sql</FullPath>
         </FileNode>
+        <FileNode Name="CODE OutputCaseListPublish.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:JONQUIL\SQLEXPRESS:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>JONQUIL\SQLEXPRESS</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>CODE OutputCaseListPublish.sql</FullPath>
+        </FileNode>
         <FileNode Name="CODE Pack.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:JONQUIL\SQLEXPRESS:True</AssociatedConnectionMoniker>
           <AssociatedConnSrvName>JONQUIL\SQLEXPRESS</AssociatedConnSrvName>
@@ -169,17 +175,23 @@
           <AssociatedConnUserName />
           <FullPath>VIEW MeasuresActivity.sql</FullPath>
         </FileNode>
+        <FileNode Name="VIEW OutputCaseLists.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:JONQUIL\SQLEXPRESS:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>JONQUIL\SQLEXPRESS</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>VIEW OutputCaseLists.sql</FullPath>
+        </FileNode>
+        <FileNode Name="VIEW OutputCaseListUnpublish.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:JONQUIL\SQLEXPRESS:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>JONQUIL\SQLEXPRESS</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>VIEW OutputCaseListUnpublish.sql</FullPath>
+        </FileNode>
         <FileNode Name="VIEW PackTableDefinitions.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:JONQUIL\SQLEXPRESS:True</AssociatedConnectionMoniker>
           <AssociatedConnSrvName>JONQUIL\SQLEXPRESS</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>VIEW PackTableDefinitions.sql</FullPath>
-        </FileNode>
-        <FileNode Name="VIEW ReportCaseLists.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:JONQUIL\SQLEXPRESS:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>JONQUIL\SQLEXPRESS</AssociatedConnSrvName>
-          <AssociatedConnUserName />
-          <FullPath>VIEW ReportCaseLists.sql</FullPath>
         </FileNode>
         <FileNode Name="VIEW ReportCases.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:JONQUIL\SQLEXPRESS:True</AssociatedConnectionMoniker>
