@@ -1,5 +1,5 @@
 --TacticalDQ by DJ Olsen https://github.com/davolsen/tacticaldq
-CREATE TABLE tdq.alpha_Cases(
+CREATE TABLE [tdq].[alpha_Cases](
 	CaseID int IDENTITY(1,1) NOT NULL PRIMARY KEY,
 	MeasureID uniqueidentifier NOT NULL,
 	RefreshID int NOT NULL,
@@ -24,7 +24,13 @@ CREATE NONCLUSTERED INDEX IX_Cases_RefreshID_DESC_MeasureID ON tdq.alpha_Cases (
 	MeasureID ASC
 );
 /*
+DECLARE
+	@MaxCaseID AS int			=(SELECT MAX(CaseID) FROM (SELECT CaseID FROM [tdq].[alpha_Cases] UNION ALL SELECT CaseID FROM [tdq].[alpha_CasesResolved])T)
+	,@LastCaseIDIdent AS int	=(SELECT CAST(last_value AS int) FROM sys.identity_columns WHERE object_id = OBJECT_ID('[tdq].[alpha_Cases]'));
+IF @MaxCaseID > @LastCaseIDIdent DBCC CHECKIDENT('[tdq].[alpha_Cases]', RESEED, @MaxCaseID);
+*/
+/*
 ALTER TABLE [tdq].[alpha_Cases] SET (SYSTEM_VERSIONING = OFF);
 ALTER TABLE [tdq].[alpha_Cases] ADD PERIOD FOR SYSTEM_TIME (Identified, Resolved)
-ALTER TABLE [tdq].[alpha_Cases] SET (SYSTEM_VERSIONING = ON (HISTORY_TABLE = tdq.alpha_CasesResolved));
+ALTER TABLE [tdq].[alpha_Cases] SET (SYSTEM_VERSIONING = ON (HISTORY_TABLE = [TDQ][.alpha_CasesResolved]));
 */

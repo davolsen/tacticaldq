@@ -3,6 +3,8 @@ CREATE OR ALTER PROC [tdq].[alpha_OutputCaseListUnpublish](
 /*<Object><Sequence>72</Sequence></Object>*/
 	@RefreshID int
 ) AS BEGIN
+	SET NOCOUNT ON;
+	PRINT 'Set refresh as unpublished';
 	UPDATE [tdq].[alpha_Refreshes]
 	SET Unpublished		=1
 	WHERE RefreshID		=@RefreshID;

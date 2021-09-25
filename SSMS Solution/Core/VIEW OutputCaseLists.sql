@@ -9,15 +9,17 @@ WITH
 			,Published
 			,Unpublished
 			,TimestampStarted
-			,RefreshHasCases	=IIF(EXISTS (SELECT 1 FROM [tdq].[alpha_Cases] WHERE RefreshID = Refreshes.RefreshID),1,0)
-			--,MeasureHasCases	=IIF(EXISTS (SELECT 1 FROM [tdq].[alpha_Cases] WHERE MeasureID = Refreshes.MeasureID),1,0)
-		FROM [tdq].[alpha_Refreshes] Refreshes
+			,HasChanges			=IIF(CasesChange > 0,1,0)
+			,MeasureHasCases	=IIF(EXISTS (SELECT 1 FROM [tdq].[alpha_Cases] WHERE MeasureID = Refreshes.MeasureID),1,0)
+		FROM
+			[tdq].[alpha_ReportRefreshesDetail] Refreshes
+			CROSS APPLY [tdq].[alpha_CasesSummary](MeasureID,DATEADD(SECOND,-1,TimestampStarted) AT TIME ZONE 'UTC',DATEADD(SECOND,1,TimestampCompleted) AT TIME ZONE 'UTC') CasesSummary
 	)
 	,CaseLists AS (
 		SELECT 
 			*
-			,Age		=ROW_NUMBER() OVER (PARTITION BY MeasureID, RefreshHasCases ORDER BY TimestampStarted DESC)
-			,AgeList	=ROW_NUMBER() OVER (PARTITION BY MeasureID, RefreshHasCases, Published, Unpublished ORDER BY TimestampStarted DESC)
+			,Age		=ROW_NUMBER() OVER (PARTITION BY MeasureID, HasChanges ORDER BY TimestampStarted DESC)
+			,AgeList	=ROW_NUMBER() OVER (PARTITION BY MeasureID, HasChanges, Published, Unpublished ORDER BY TimestampStarted DESC)
 		FROM Refreshes
 	)
 SELECT
@@ -29,37 +31,40 @@ SELECT
 	,CaseLists.Unpublished
 	,CaseListStatus	=CASE
 						WHEN
-							CaseLists.RefreshID			=LatestCaseList.RefreshID
-							AND CaseLists.Published		=1
-							AND CaseLists.Unpublished	=0
+							CaseLists.RefreshID				=LatestCaseList.RefreshID
+							AND CaseLists.Published			=1
+							AND CaseLists.Unpublished		=0
 								THEN 'CUR'
 						WHEN
-							CaseLists.RefreshID			=LatestCaseList.RefreshID
+							CaseLists.RefreshID				=LatestCaseList.RefreshID
 							AND (
 								CaseLists.Published			=0
 								OR CaseLists.Unpublished	=1
 							)
 								THEN 'NEW'
 						ELSE 'OLD' END
-	,CaseListName	=Measures.MeasureCode
-					+' '+SUBSTRING(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(Measures.MeasureDefinition,'<','_'),'>','_'),':','_'),'"','_'),'/','_'),'\','_'),'|','_'),'?','_'),'*','_'),'.',''),1,260-2-19-LEN(Measures.MeasureCode))
-					+' '+CAST(CaseLists.TimestampStarted AS nvarchar(16))
+	,CaseListName	=CAST(Measures.MeasureCode
+					+' '+SUBSTRING(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(Measures.MeasureDefinition,'<','_'),'>','_'),':','_'),'"','_'),'/','_'),'\','_'),'|','_'),'?','_'),'*','_'),'.',''),1,260-LEN(Measures.MeasureCode)-15-2)
+					+' '+REPLACE(CONVERT(nvarchar(16),CaseLists.TimestampStarted,120),':','') AS nvarchar(260))
 FROM
 	CaseLists
 	JOIN CaseLists LatestCaseList ON
-		LatestCaseList.MeasureID			=CaseLists.MeasureID
-		AND LatestCaseList.RefreshHasCases	=1
-		AND LatestCaseList.Age				=1
+		LatestCaseList.MeasureID		=CaseLists.MeasureID
+		AND LatestCaseList.HasChanges	=1
+		AND LatestCaseList.Age			=1
 	LEFT JOIN [tdq].[alpha_Measures] Measures ON Measures.MeasureID = CaseLists.MeasureID
 WHERE
-	CaseLists.RefreshHasCases = 1
+	CaseLists.HasChanges = 1
 	AND (
-		CaseLists.RefreshID = LatestCaseList.RefreshID
-		OR (CaseLists.Published = 1 AND CaseLists.Unpublished = 0)
+		(--published
+			CaseLists.Published			=1
+			AND CaseLists.Unpublished	=0
+		)
+		OR (--OR is current/new and should be published or unpublished
+			CaseLists.RefreshID				=LatestCaseList.RefreshID
+			AND CaseLists.MeasureHasCases	=1
+		)
 	);
---WHERE
---	Unpublished = 0
---	AND NOT (CurrentCases = 0 AND Published = 0);
 GO
 SELECT * FROM [tdq].[alpha_OutputCaseLists];
 

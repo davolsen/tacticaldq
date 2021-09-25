@@ -32,29 +32,39 @@ ALTER TABLE [tdq].[alpha_Cases] SET (SYSTEM_VERSIONING = ON (HISTORY_TABLE = tdq
 */
 
 
+
+
+
+
 exec tdq.alpha_Refresh '3A4F8C51-31B9-4612-AD70-FF6CFD5A0E9E';
 
-GO
+select top 10 * from tdq.alpha_ReportRefreshesDetail where measureID = '3A4F8C51-31B9-4612-AD70-FF6CFD5A0E9E' order by TimestampCompleted desc
 
-WITH
-	Definitions AS (
-		SELECT
-			definition
-			,ObjectName	='['+SCHEMA_NAME(all_objects.schema_id)+']'
-						+'.['+OBJECT_NAME(sql_modules.object_id)+']'	
-			,MetaStart	=CHARINDEX('<Measure>',definition,1)					
-			,MetaEnd	=CHARINDEX('</Measure>',definition,1) + 10
-		FROM
-			sys.sql_modules
-			JOIN sys.all_objects ON all_objects.object_id = sql_modules.object_id
-		WHERE
-			OBJECT_NAME(sql_modules.object_id)		LIKE	[tdq].[alpha_BoxText]('HomePrefix') + [tdq].[alpha_BoxText]('MeasureViewPattern')
-			AND SCHEMA_NAME(all_objects.schema_id)	=		[tdq].[alpha_BoxText]('HomeSchema')
-	)
-	,MetaData AS (
-			SELECT
-				ObjectName
-				,XMLData =IIF(MetaEnd>MetaStart,TRY_CAST(SUBSTRING(definition,MetaStart,MetaEnd - MetaStart) AS xml),NULL)
-			FROM Definitions
-	)
-	SELECT * FROM MetaData;
+
+select * from WorldWideImporters.Sales.Customers
+
+begin tran;
+update WorldWideImporters.Sales.Customers
+set BuyingGroupID = Y.BuyingGroupID
+FROM WorldWideImporters.Sales.Customers X JOIN WorldWideImportersClean.Sales.Customers Y ON Y.CustomerID = X.CustomerID;
+SELECT * FROM [tdq].[alpha_measure_CUST-MAST-BGRP] ;
+commit;
+
+--select * from sys.sql_modules where definition like '%alpha_CasesSummary%'
+
+EXEC [tdq].[alpha_OutputCaseListUnpublish] @RefreshID = 2626;
+
+EXEC [tdq].[alpha_OutputCaseListPublish] @MeasureID = '3A4F8C51-31B9-4612-AD70-FF6CFD5A0E9E'
+
+
+SELECT RefreshID
+								FROM (
+									SELECT
+										RefreshID
+										,Age		=ROW_NUMBER() OVER (ORDER BY TimestampStarted DESC)
+									FROM [tdq].[alpha_Refreshes] Refreshes
+									WHERE
+										MeasureID = '3A4F8C51-31B9-4612-AD70-FF6CFD5A0E9E'
+										AND EXISTS (SELECT 1 FROM [tdq].[alpha_Cases] WHERE RefreshID = Refreshes.RefreshID)
+								)T
+								WHERE Age = 1

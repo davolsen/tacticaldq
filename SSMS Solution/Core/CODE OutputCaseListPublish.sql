@@ -3,6 +3,8 @@ CREATE OR ALTER PROC [tdq].[alpha_OutputCaseListPublish](
 /*<Object><Sequence>71</Sequence></Object>*/
 	@MeasureID uniqueidentifier
 ) AS BEGIN
+	SET NOCOUNT ON;
+
 	DECLARE
 		@CurrentCases	bit =IIF(EXISTS (SELECT 1 FROM [tdq].[alpha_Cases] WHERE MeasureID = @MeasureID),1,0)
 		,@RefreshID		int	=(
@@ -19,15 +21,12 @@ CREATE OR ALTER PROC [tdq].[alpha_OutputCaseListPublish](
 								WHERE Age = 1
 							);
 
-	UPDATE [tdq].[alpha_Refreshes]
-	SET Unpublished		=	1
-	WHERE MeasureID		=	@MeasureID;
-
-	UPDATE [tdq].[alpha_Refreshes]
-	SET
-		Published		=1
-		,Unpublished	=0
-	WHERE RefreshID	=@RefreshID;
+	IF @RefreshID IS NOT NULL
+		UPDATE [tdq].[alpha_Refreshes]
+		SET
+			Published		=1
+			,Unpublished	=0
+		WHERE RefreshID	=@RefreshID;
 
 	SELECT
 		RefreshID	=@RefreshID
@@ -57,6 +56,6 @@ CREATE OR ALTER PROC [tdq].[alpha_OutputCaseListPublish](
 	WHERE MeasureID = @MeasureID
 END;
 GO
-SELECT * FROM [tdq].[alpha_OutputCaseLists];
-EXEC [tdq].[alpha_OutputCaseListPublish] @MeasureID = '3A4F8C51-31B9-4612-AD70-FF6CFD5A0E9E';
-SELECT * FROM [tdq].[alpha_OutputCaseLists];
+--SELECT * FROM [tdq].[alpha_OutputCaseLists];
+--EXEC [tdq].[alpha_OutputCaseListPublish] @MeasureID = '3A4F8C51-31B9-4612-AD70-FF6CFD5A0E9E';
+--SELECT * FROM [tdq].[alpha_OutputCaseLists];
