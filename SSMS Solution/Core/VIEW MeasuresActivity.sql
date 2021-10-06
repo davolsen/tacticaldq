@@ -28,7 +28,7 @@ SELECT
 												WHEN 'C'	THEN MaxTimestampStarted
 												WHEN 'H'		THEN DATEADD(HOUR,1,LastStartedHour)--TODO: NOPE
 												WHEN 'D'		THEN DATEADD(DAY,1,LastStartedDay)
-												ELSE DATEADD(DAY,IIF(Today > RefreshWeekDay,7,0) + (RefreshWeekDay - Today),LastStartedDay)
+												ELSE DATEADD(DAY,IIF(DATEPART(WEEKDAY,MaxTimestampStarted) >= RefreshWeekDay,7,0) + (RefreshWeekDay - Today),LastStartedDay)
 													END) END
 
 	,MeasureCategory
