@@ -1,4 +1,6 @@
-CREATE OR ALTER PROCEDURE [tdq].[alpha_Pack] AS BEGIN
+CREATE OR ALTER PROCEDURE [tdq].[alpha_Pack](
+	@GenerateBootstrapScript int = 1
+) AS BEGIN
 --TacticalDQ by DJ Olsen https://github.com/davolsen/tacticaldq
 /*<Object><Sequence>102</Sequence></Object>*/
 	SET NOCOUNT ON;
@@ -10,8 +12,8 @@ CREATE OR ALTER PROCEDURE [tdq].[alpha_Pack] AS BEGIN
 					ObjectName		=SUBSTRING(OBJECT_NAME(object_id),LEN([tdq].[alpha_BoxText]('HomePrefix')) + 1,128)
 					,DefinitionText	=REPLACE(REPLACE(definition,'['+[tdq].[alpha_BoxText]('HomeSchema')+']','[$schema$]'),'['+[tdq].[alpha_BoxText]('HomePrefix'),'[$prefix$')
 					,ObjectType		=IIF(OBJECT_NAME(object_id) LIKE [tdq].[alpha_BoxText]('HomePrefix')
-						+'%'
-						+[tdq].[alpha_BoxText]('MeasureViewPattern'),'MESR','CODE')
+										+'%'
+										+[tdq].[alpha_BoxText]('MeasureViewPattern'),'MESR','CODE')
 				FROM sys.sql_modules
 				WHERE
 					OBJECT_SCHEMA_NAME(object_id) = [tdq].[alpha_BoxText]('HomeSchema')
@@ -59,7 +61,7 @@ CREATE OR ALTER PROCEDURE [tdq].[alpha_Pack] AS BEGIN
 			COMMIT;
 
 			PRINT 'Generate bootstrap script'+CHAR(13)+CHAR(10)+CHAR(13)+CHAR(10)+REPLICATE('-',100)+CHAR(13)+CHAR(10)+CHAR(13)+CHAR(10);
-			EXEC [tdq].[alpha_GenerateBootstrapScript];
+			IF @GenerateBootstrapScript = 1 EXEC [tdq].[alpha_GenerateBootstrapScript];
 			PRINT CHAR(13)+CHAR(10)+CHAR(13)+CHAR(10)+REPLICATE('-',100) ;
 		END TRY
 		BEGIN CATCH

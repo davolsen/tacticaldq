@@ -13,9 +13,15 @@ CREATE OR ALTER PROCEDURE [tdq].[alpha_Teardown](
 		ALTER TABLE [tdq].[alpha_Cases] SET (SYSTEM_VERSIONING = OFF);
 
 		DECLARE @job_name nvarchar(4000) = [tdq].[alpha_BoxText]('AgentJobName');
-		PRINT 'Stop and disable agent job';
-		--EXEC msdb.dbo.sp_stop_job @Job_name = @job_name;
-		EXEC msdb.dbo.sp_update_job @Job_name = @job_name, @enabled = 0;
+		PRINT 'Delete Agent Job';
+		IF EXISTS (SELECT 1 FROM msdb.dbo.sysjobs WHERE name = @job_name) EXEC msdb.dbo.sp_delete_job @job_name = @job_name;
+
+		PRINT 'Delete mail profiles';
+		DECLARE @profile_name	nvarchar(4000)	=[tdq].[alpha_BoxText]('MailProfileName')
+		DECLARE @profile_id		int				=(SELECT TOP 1 profile_id FROM msdb.dbo.sysmail_profile WHERE name = @profile_name);
+		IF @profile_id IS NOT NULL EXEC msdb.dbo.sysmail_delete_profile_sp @profile_id = @profile_id, @force_delete = 1;
+		DECLARE @account_id int =(SELECT TOP 1 account_id FROM msdb.dbo.sysmail_account WHERE name = @profile_name);
+		IF @account_id IS NOT NULL EXEC msdb.dbo.sysmail_delete_account_sp @account_id = @account_id;
 
 		PRINT 'Get standard objects';
 		DECLARE
@@ -52,17 +58,6 @@ CREATE OR ALTER PROCEDURE [tdq].[alpha_Teardown](
 			EXEC (@SQL);
 			FETCH NEXT FROM ObjectList INTO @ObjectName, @ObjectType;
 		END;
-
-		PRINT 'Delete Agent Job';
-		IF EXISTS (SELECT 1 FROM msdb.dbo.sysjobs WHERE name = @job_name) EXEC msdb.dbo.sp_delete_job @job_name = @job_name;
-
-		PRINT 'Delete mail profiles';
-		DECLARE @profile_name	nvarchar(4000)	=[tdq].[alpha_BoxText]('MailProfileName')
-		DECLARE @profile_id		int				=(SELECT TOP 1 profile_id FROM msdb.dbo.sysmail_profile WHERE name = @profile_name);
-		IF @profile_id IS NOT NULL EXEC msdb.dbo.sysmail_delete_profile_sp @profile_id = @profile_id, @force_delete = 1;
-		DECLARE @account_id int =(SELECT TOP 1 account_id FROM msdb.dbo.sysmail_account WHERE name = @profile_name);
-		IF @account_id IS NOT NULL EXEC msdb.dbo.sysmail_delete_account_sp @account_id = @account_id;
-
 	END TRY
 	BEGIN CATCH
 		INSERT [tdq].[alpha_Log](LogSource, Code, Error, LogMessage)
