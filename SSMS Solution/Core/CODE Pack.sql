@@ -39,8 +39,8 @@ CREATE OR ALTER PROCEDURE [tdq].[alpha_Pack](
 			FROM [tdq].[alpha_PackTableDefinitions];--view had to be split off for file size limitation
 
 			PRINT 'Check object definition lengths';
-			IF (SELECT MAX(LEN(DefinitionBinary)) FROM #Definitions) > 4000 BEGIN
-				DECLARE @ErrorMessage nvarchar(2048) = 'FATAL: compressed definition too long (>4000 bytes): ''' + (SELECT STRING_AGG(ObjectName+' ('+CAST(LEN(DefinitionText) AS nvarchar)+')', ''' and ''') FROM #Definitions WHERE LEN(DefinitionBinary) > 4000) + '''';
+			IF (SELECT MAX(LEN(DefinitionBinary)) FROM #Definitions) > 8000 BEGIN
+				DECLARE @ErrorMessage nvarchar(2048) = 'FATAL: compressed definition too long (>4000 bytes): ''' + (SELECT STRING_AGG(ObjectName+' ('+CAST(LEN(DefinitionText) AS nvarchar)+')', ''' and ''') FROM #Definitions WHERE LEN(DefinitionBinary) > 8000) + '''';
 				THROW 50000, @ErrorMessage, 1;
 			END;
 
