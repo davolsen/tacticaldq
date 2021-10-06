@@ -16,9 +16,9 @@ CREATE OR ALTER PROC [tdq].[alpha_SchedulerConfig](
 	ELSE PRINT 'Service Broker already enabled';
 
 	DECLARE
-		@SQL						nvarchar(4000)--dynamic SQL
+		@SQL							nvarchar(4000)--dynamic SQL
 		,@SchedulerMaxParallelRefreshes	int				= [tdq].[alpha_BoxDec]('SchedulerMaxParallelRefreshes')--MAX_QUEUE_READERS
-		,@ServiceName				nvarchar(4000)	= '[alpha_Scheduler]';--needed for bootstrap/unpack script
+		,@ServiceName					nvarchar(4000)	= '[alpha_Scheduler]';--needed for bootstrap/unpack script
 
 	IF EXISTS(SELECT 1 FROM sys.services WHERE Name = REPLACE(REPLACE(@ServiceName,'[',''),']','')) BEGIN
 		PRINT 'Service Broker service already exists';

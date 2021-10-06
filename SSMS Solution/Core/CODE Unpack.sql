@@ -6,7 +6,7 @@ CREATE OR ALTER PROCEDURE [tdq].[alpha_Unpack] AS BEGIN
 		,@SchemaName			nvarchar(128)	= OBJECT_SCHEMA_NAME(@@PROCID)												--the schema for this proc
 		,@SchemaToken			nvarchar(128)	='[/$schema/$]'																--to be replaced with schema. /$ MUST BE PRESERVED so it is not replaced during installation of this code
 		,@PrefixToken			nvarchar(128)	='[/$prefix/$'																--to be replaced with schema. /$ MUST BE PRESERVED so it is not replaced during installation of this code
-		,@SQL					nvarchar(4000);																				--holds dynamic SQL
+		,@SQL					nvarchar(max);																				--holds dynamic SQL
 	DECLARE @BoxTableName		nvarchar(128)	='[' + @SchemaName + '].[' + @Prefix + 'box]';
 	DECLARE @CodeObjects		TABLE(
 		ObjectName		nvarchar(128)
@@ -41,7 +41,7 @@ CREATE OR ALTER PROCEDURE [tdq].[alpha_Unpack] AS BEGIN
 			FETCH NEXT FROM BuildCursor INTO @ObjectName, @BinaryObject;
 			WHILE @@FETCH_STATUS = 0 BEGIN
 				PRINT 'Unpacking '+@ObjectName;
-				SET @SQL = CAST(DECOMPRESS(@BinaryObject) AS nvarchar(4000))
+				SET @SQL = CAST(DECOMPRESS(@BinaryObject) AS nvarchar(max))
 				SET @SQL = REPLACE(REPLACE(@SQL, REPLACE(@SchemaToken,'/$','$'), '['+@SchemaName+']'), REPLACE(@PrefixToken,'/$','$'), '['+@Prefix); -- replace the schema and prefix
 
 				EXEC (@SQL); -- create the object

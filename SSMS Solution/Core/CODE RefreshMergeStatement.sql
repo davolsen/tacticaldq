@@ -9,13 +9,10 @@ CREATE OR ALTER FUNCTION [tdq].[alpha_RefreshMergeStatement]
 RETURNS nvarchar(4000)
 AS
 BEGIN
-	DECLARE @SQL AS nvarchar(4000)
-
-
 	DECLARE
 		@TempCaseTableObjectID	int				=OBJECT_ID('tempdb..'+@TempCaseTableName)
-		,@InsertColumns			nvarchar(4000)
-		,@SelectColumns			nvarchar(4000)
+		,@InsertColumns			nvarchar(max)
+		,@SelectColumns			nvarchar(max)
 		,@MaxColumns			int				=9;
 					
 	WITH
@@ -30,8 +27,8 @@ BEGIN
 		)
 		,Statements AS (
 			SELECT
-				InsertColumns	=CAST('CaseValue1' AS nvarchar(4000))
-				,SelectColumns	='['+CAST(name AS nvarchar(4000))+']'
+				InsertColumns	=CAST('CaseValue1' AS nvarchar(max))
+				,SelectColumns	='['+CAST(name AS nvarchar(max))+']'
 				,column_id
 				,NextID			=column_id + 1
 			FROM ColumnList
@@ -71,7 +68,7 @@ BEGIN
 	FROM Statements
 	WHERE column_id = (SELECT MAX(column_id) FROM Statements);
 
-	SET @SQL = '
+	DECLARE @SQL nvarchar(max) = '
 		WITH NewCases AS (SELECT CaseChecksum=BINARY_CHECKSUM(*),* FROM '+@TempCaseTableName+')
 		MERGE [tdq].[alpha_Cases] CurrentCases
 		USING NewCases ON NewCases.CaseChecksum = CurrentCases.CaseChecksum AND MeasureID = '''+CAST(@MeasureID AS nvarchar(36))+'''

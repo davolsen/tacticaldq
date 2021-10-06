@@ -8,7 +8,7 @@ WITH
 			,MaxTimestampStarted	=MAX(TimestampStarted)
 			,LastStartedDay			=[tdq].[alpha_RoundDate](MAX(TimestampStarted),'DAY')		
 			,LastStartedHour		=[tdq].[alpha_RoundDate](MAX(TimestampStarted),'HOUR')
-			,Today				=DATEPART(WEEKDAY,SYSDATETIME())
+			,Today					=DATEPART(WEEKDAY,SYSDATETIME())
 		FROM [tdq].[alpha_Refreshes]
 		GROUP BY MeasureID
 	)
@@ -26,9 +26,9 @@ SELECT
 										ELSE
 											DATEADD(MINUTE,RefreshTimeMinutes,CASE LEFT(RefreshPolicy,1)
 												WHEN 'C'	THEN MaxTimestampStarted
-												WHEN 'H'		THEN DATEADD(HOUR,1,LastStartedHour)--TODO: NOPE
-												WHEN 'D'		THEN DATEADD(DAY,1,LastStartedDay)
-												ELSE DATEADD(DAY,IIF(Today > RefreshWeekDay,7,0) + (RefreshWeekDay - Today),LastStartedDay)
+												WHEN 'H'	THEN DATEADD(HOUR,1,LastStartedHour)--TODO: NOPE
+												WHEN 'D'	THEN DATEADD(DAY,1,LastStartedDay)
+												ELSE DATEADD(DAY,IIF(DATEPART(WEEKDAY,MaxTimestampStarted) >= RefreshWeekDay,7,0) + (RefreshWeekDay - Today),LastStartedDay)
 													END) END
 
 	,MeasureCategory

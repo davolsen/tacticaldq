@@ -2,7 +2,7 @@ CREATE OR ALTER PROC [tdq].[alpha_RefreshFromQueue] AS BEGIN
 --TacticalDQ by DJ Olsen https://github.com/davolsen/tacticaldq
 /*<Object><Sequence>32</Sequence></Object>*/
 	DECLARE
-		@SQL				nvarchar(4000)--holds dynamic SQL
+		@SQL				nvarchar(140)--holds dynamic SQL
 		,@TempCaseTableName	nvarchar(128)	='##tdq_' + REPLACE(NEWID(),'-','_');
 
 	BEGIN TRY

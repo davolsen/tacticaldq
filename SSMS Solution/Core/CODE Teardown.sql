@@ -28,7 +28,7 @@ CREATE OR ALTER PROCEDURE [tdq].[alpha_Teardown](
 			@ObjectName		nvarchar(128)
 			,@ObjectType	char(2)
 			,@HomeSchema	nvarchar(128)	=[tdq].[alpha_BoxText]('HomeSchema')
-			,@SQL			nvarchar(4000)
+			,@SQL			nvarchar(276)
 		DECLARE ObjectList CURSOR FAST_FORWARD FOR
 			SELECT name, type
 			FROM

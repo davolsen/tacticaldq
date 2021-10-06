@@ -90,5 +90,5 @@ WHERE DATEDIFF(DAY,TimestampStarted,SYSDATETIMEOFFSET()) <= [tdq].[alpha_BoxDec]
 GO
 
 DECLARE @Start AS datetime2(7) = SYSDATETIME();
-SELECT * FROM [tdq].[alpha_ReportRefreshesDetail];
+SELECT * FROM [tdq].[alpha_ReportRefreshesDetail] order by TimestampStarted desc;
 PRINT DATEDIFF(MILLISECOND,@Start,SYSDATETIME());
