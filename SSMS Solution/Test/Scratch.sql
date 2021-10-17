@@ -27,11 +27,4 @@ select * from tdq.alpha_CasesResolved ORDER BY RefreshID DESC;
 
 SELECT * FROM sys.sql_modules where definition like '%@SQL %'
 
-begin tran
-delete from tdq.alpha_Cases where refreshid in (
-2644
-,2642
-,2640
-,2633
-)
-rollback
+select * from sys.sql_modules where definition like '%casesmergestatement%'

@@ -50,7 +50,7 @@ CREATE OR ALTER PROCEDURE [tdq].[alpha_GenerateBootstrapScript] AS BEGIN
 	CLOSE		BoxRows;
 	DEALLOCATE	BoxRows;
 	PRINT ')Box(ObjectName,ObjectType,ObjectSequence,DefinitionBinary,DefinitionText,DefinitionDecimal,DefinitionDate,DefinitionBit)';
-	PRINT 'UPDATE #BoxTable SET AgentEnabled = @Enabled';
+	PRINT 'UPDATE #BoxTable SET DefinitionBit = @Enabled WHERE ObjectName = ''AgentEnabled''';
 	PRINT 'DECLARE @SQL nvarchar(max)=REPLACE(REPLACE((SELECT CAST(DECOMPRESS(DefinitionBinary) AS nvarchar(max)) FROM #BoxTable WHERE ObjectName = ''Box''),''[$schema$]'',''[''+@SchemaName+'']''),''[$prefix$'',''[''+@Prefix);';
 	PRINT 'EXEC (@SQL);';
 	PRINT 'SET @SQL =''INSERT [''+@SchemaName+''].[''+@Prefix+''Box] SELECT ObjectName,ObjectType,ObjectSequence,DefinitionBinary,DefinitionText,DefinitionDecimal,DefinitionDate,DefinitionBit FROM #BoxTable'';';

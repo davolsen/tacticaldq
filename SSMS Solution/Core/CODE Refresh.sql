@@ -3,6 +3,7 @@ CREATE OR ALTER PROC [tdq].[alpha_Refresh](
 /*<Object><Sequence>31</Sequence></Object>*/
 	@MeasureID		uniqueidentifier	= NULL--always overrides Code
 	,@MeasureCode	nvarchar(50)		= NULL
+	,@NextFromQueue	bit					= NULL
 ) AS BEGIN
 	PRINT 'Refresh a measure by ID or Code'
 	SET NOCOUNT ON;
@@ -12,6 +13,33 @@ CREATE OR ALTER PROC [tdq].[alpha_Refresh](
 		,@RefreshID		int;--holds a new refresh ID
 
 	BEGIN TRY
+		IF @NextFromQueue = 1 BEGIN
+			SET NOCOUNT ON;
+			PRINT 'Get next refresh task from queue';
+			DECLARE
+				@Message			xml--from the queue
+				,@MessageTypeName	nvarchar(256);--from the queue
+			RECEIVE TOP(1)
+				@Message			=message_body
+				,@MessageTypeName	=message_type_name
+			FROM [tdq].[alpha_RefreshesPending];
+			DECLARE @ResultCount int = @@ROWCOUNT;
+
+			IF @MessageTypeName = 'DEFAULT' BEGIN--DFAULT is a job. Other message types are usually conversation statuses
+				PRINT 'Get measure details';
+				SET @MeasureCode	=@Message.value('(/Refresh/Code/text())[1]', 'nvarchar(100)')
+				SET @MeasureID		=@Message.value('(/Refresh/ID/text())[1]', 'nchar(36)')
+				PRINT 'Log job and start a refresh';
+				INSERT [tdq].[alpha_Log](LogSource, MeasureID, Code, LogMessage)
+				VALUES (OBJECT_NAME(@@PROCID), @MeasureID, @MeasureCode, 'Fetched refresh task from queue');
+			END;
+			ELSE IF @ResultCount = 0 BEGIN--no job
+				PRINT 'No measure refresh tasks in queue';
+				INSERT INTO [tdq].[alpha_Log](LogSource, LogMessage)
+				VALUES (OBJECT_NAME(@@PROCID), 'No refresh tasks waiting in queue');
+			END;
+		END;
+
 		PRINT 'Get measure details'
 		DECLARE
 			@ObjectName		nvarchar(128)
@@ -50,12 +78,10 @@ CREATE OR ALTER PROC [tdq].[alpha_Refresh](
 				DECLARE @TempCaseTableObjectID int =OBJECT_ID('tempdb..'+@TempCaseTableName);
 				IF @TempCaseTableObjectID IS NOT NULL BEGIN
 					PRINT 'Refresh complete. Merge into case table';
-
 					DECLARE
 						@InsertColumns			nvarchar(max)
 						,@SelectColumns			nvarchar(max)
 						,@MaxColumns			int				=9;
-					
 					WITH
 						ColumnList AS (
 							SELECT
